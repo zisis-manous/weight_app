@@ -1,4 +1,4 @@
-# wEIGHT APP
+# WEIGHT APP FOR LPWAN WEIGHTING SYSTEMS
 
 Απλή εφαρμογή υλοποίησης της εφαρμογής ΙoT για Low energy weighting systems
 της Ομάδας 2
