@@ -1,72 +1,68 @@
  <head profile="http://gmpg.org/xfn/11">
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
  
-      <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+     <!--  <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
       
-      <script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
-      <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js'></script>
- 
- 
- 
-    <style>
-      .map {
-        height: 400px;
-        width: 100%;
-      }
-        li{
-        overflow:hidden;
-        }
-      p{
-        display:inline-block;
-        }
-    .ol-popup{
-        border-style:solid;
-        border-width: 0.02cm;
-        border-radius: 5%;
-        padding-right: auto;
-        background-color: rgb(167, 165, 165);
-        
-    }
-    #close_img{
-            float: right;
-            width: 15px;
-            height: auto;
-
-    }
+      
+     <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js'></script> -->
 
 
-    </style>
+      <link rel="stylesheet" href="/leaflet.css" />
+      <link rel="stylesheet" href="/css/weight.css" />
+      <link rel="stylesheet" href="/css/navigations_bar.css" />
+      <script src="/leaflet.js"></script>
+ 
+ 
+  
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
     <title>OpenLayers example</title>
   </head>
   <body>
-    <h2>My Map</h2>
-    <div id="map" style="width: 900px; height: 600px; border: 1px solid #AAA;"></div>
-     
-
-     
-     <!--
-       <div id="map" style="width: 600px; height: 400px;"></div>
-    <div id="popup" class="ol-popup">
-        <a href="#" id="popup-closer" class="ol-popup-closer"><img id="close_img" src="https://img.icons8.com/material-outlined/24/000000/delete-sign.png"/></a><br>
-        <div id="popup-content"></div>
-     </div>-->
-     
-   
   
+<div class="parent"> 
 
 
+<div id="map" class="div_map" style="width: 900px; height: 600px; "></div>
+     
 
-<p id='scale'>Scales</p>
+    
+<div class="devices">
+<h2 id='scale' style="color: aliceblue;">Scales</h2>
 
 
-<ul class='tasks' id="list">
+<table class='tasks' id="list">
+    <tr>
+      <td>Device</td>
+      <td>Weight</td>
+      <td>Lognitude</td>
+      <td>Latitude</td>
+      <td>Time</td>
+      <td>Date</td>
+    </tr>
     {{#each devices }}
-        <li class='task' id={{id}}><button id='button{{id}}' onclick="OpenPopUp({{id}})"><p class='weight'>weight: {{weight}}kg</p> <p > lognitude: <p class="lognitude">{{lognitude}}</p>,</p> <p>latitude: <p class="latitude">{{latitude}} </p></p>, </p>time:<p class="time"> {{time}}, </p><p> date: <p class="date">{{date}}</p></p></button><a href="/device/{{id}}">see device's history</a></li>
-
+    
+    <tr>
+      <!--<a href="/device/{{id}}"target="_self" class="a1" > -->
+      <td class="td_device" onclick="OpenPopUp({{id}})"> <p class='task' id={{id}}>{{id}}&nbsp;</p></td>
+      
+     <!-- <div class="weight_button" id='button{{id}}' onclick="OpenPopUp({{id}})">&nbsp;-->
+        <td> <p class='weight' > {{weight}}</p> </td>
+         <td><p class="lognitude" >{{lognitude}}</p></td>
+         <td><p class="latitude" >{{latitude}} </p></td>
+        <td> <p class="time"> {{time}}</p></td>
+        <td> <p class="date" >{{date}}&nbsp;</p></td>
+        <td class="test"><a href="/device/{{id}}"target="_self" class="a1" ><p>See history</p></a></td>
+       <!--  </div> -->
+    </tr>
+ 
    <!-- <li class='task' id={{id}}>weight: {{weight}}, lognitude: {{lognitude}}, latitude: {{latitude}}, time: {{time}}, date: {{date}}</li> -->
     {{/each}}
-</ul>
+</table>
+
+</div>
+
+</div>
+
 
 <script >
     function find_id(id1,data){
@@ -122,7 +118,7 @@
     var markers=[]
     for(i=0;i<latitude.length;i++){
         markers.push({
-          "id":i,
+          "id":ids[i],
           "lat":latitude[i],
           "lng":lognitude[i],
           "weight":weight[i],
@@ -137,7 +133,7 @@ for ( var i=0; i < markers.length; ++i )
 {
    
   mark1= L.marker( [markers[i].lat, markers[i].lng] )
-      .bindPopup( '<a href="/device/' + markers[i].id + '" target="_blank" rel="noopener">device:' + markers[i].id + '</a><br>'+'<p>'+markers[i].weight+'<br>'+markers[i].date+' '+markers[i].time+'</p>' )
+      .bindPopup( '<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].id + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>' )
       .addTo( map );
   mark.push(
     {
