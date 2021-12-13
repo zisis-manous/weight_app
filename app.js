@@ -10,6 +10,7 @@ const clientId = `mqtt_${Math.random().toString(16).slice(3)}`
 //Διαδρομές - Routse
 const routes = require('./routes/task-list-routes');
 app.use('/', routes);
+app.use(express.static(__dirname + '/public'));
 
 //Χρήση των views - Using 'views'
 //Σημ.: η engine πρέπει να έχει ίδιο όνομα με το extname, αλλιώς δεν θα αναγνωριστεί το extname (αλλιώς τα αρχεία θα πρέπει να τελειώνουν με .handlebars)
