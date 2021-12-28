@@ -6,6 +6,8 @@ body{
 
 .div_map{
     border: 4px solid rgb(212, 206, 224); 
+    background-color: rgb(212, 206, 224); 
+    width: auto;
     border-radius: 20px;
     padding: 0.5% 0.5% 0.5% 0.5%;
     box-shadow: 5px 5px 5px 6px rgba(0, 0, 0, 0.37);
@@ -16,11 +18,15 @@ body{
 /*
 
 */
+.title{
+    padding-left: 2%;
+    color: antiquewhite;
+}
 .parent{
     padding-left: 2%;
     
 }
-@media screen and (min-width: 1300px){
+@media screen and (min-width: 1500px){
     .parent{
         display: grid;
       grid-template-columns:  0.8fr 1fr
@@ -98,27 +104,7 @@ li{
 p{
     display:inline-block;
     }
-.ol-popup{
-    border-style:solid;
-    border-width: 0.02cm;
-    border-radius: 5%;
-    padding-right: auto;
-    background-color: rgb(167, 165, 165);
-    
-}
-#close_img{
-        float: right;
-        width: 15px;
-        height: auto;
 
-}
-
-.weight_button{
-    width: 100%;
-    background-color:aliceblue;
-    display:inline-block;
-   
-}
 
 td{
     padding-left: 5px;
