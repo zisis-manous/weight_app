@@ -117,7 +117,7 @@ exports.AddWeight=(request,response)=>{
     })
    // }
     //else{
-        response.send('wrong password')
+       // response.send('wrong password')
    // }
 }
 /*
