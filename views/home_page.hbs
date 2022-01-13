@@ -1,6 +1,7 @@
  <head profile="http://gmpg.org/xfn/11">
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
- 
+
+
      <!--  <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
       
       
@@ -77,6 +78,9 @@
 
 
 <script >
+  setInterval(function(){
+   window.location.reload(1);
+}, 30000);
   function get_basic_info(){
  var list=document.getElementsByClassName('task')
     var pos=document.getElementsByClassName('pos')
