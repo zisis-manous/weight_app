@@ -1,0 +1,259 @@
+ <head profile="http://gmpg.org/xfn/11">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+ 
+     <!--  <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+      
+      
+     <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js'></script> -->
+
+
+      <link rel="stylesheet" href="/leaflet.css" />
+      <link rel="stylesheet" href="/css/weight.css" />
+      <link rel="stylesheet" href="/css/navigations_bar.css" />
+      <script src="/leaflet.js"></script>
+ 
+ 
+  
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
+    <title>OpenLayers example</title>
+  </head>
+  <body>
+  
+<div class="parent"> 
+
+
+<div id="map" class="div_map" ></div>
+     
+
+    
+<div class="devices">
+<h2 id='scale' style="color: aliceblue;">Scales</h2>
+
+
+<table class='tasks' id="list">
+    <tr>
+      <!--
+      <td>num <p style="font-size: xx-large;" onclick="Asceding('pos')">🠕</p><p onclick="Desceding('pos')" style="font-size: xx-large;">🠗</p></td>
+      <td>Device</td>
+      
+      <td>Weight<p style="font-size: xx-large;" onclick="Asceding('weight')">🠕</p><p onclick="Desceding('weight')" style="font-size: xx-large;">🠗</p></td>
+      <td>Lognitude <p style="font-size: xx-large;" onclick="Asceding('lognitude')">🠕</p><p onclick="Desceding('lognitude')" style="font-size: xx-large;">🠗</p></td>
+      <td>Latitude <p style="font-size: xx-large;" onclick="Asceding('latitude')">🠕</p><p onclick="Desceding('latitude')" style="font-size: xx-large;">🠗</p></td>
+      <td>Date-Time <p style="font-size: xx-large;" onclick="Asceding('date-time')">🠕</p><p onclick="Desceding('date-time')" style="font-size: xx-large;">🠗</p></td>
+      -->
+      <td>num </td>
+      <td>Device</td>
+      
+      <td>Weight</td>
+      <td>Lognitude </td>
+      <td>Latitude </td>
+      <td>Date-Time</td>
+    </tr>
+    {{#each devices }}
+    
+    <tr>
+      <td class="pos" id={{pos}}>{{pos}}</td>
+      <!--<a href="/device/{{id}}"target="_self" class="a1" > -->
+      <td class="td_device" onclick="OpenPopUp({{pos}})"> <p class='task' id={{device_id1}}>{{device_name}}&nbsp;</p></td>
+      
+     <!-- <div class="weight_button" id='button{{id}}' onclick="OpenPopUp({{id}})">&nbsp;-->
+        
+        <td> <p class='weight' > {{weight}}</p> </td>
+         <td><p class="lognitude" >{{long}}</p></td>
+         <td><p class="latitude" >{{lang}} </p></td>
+        <td class="date-time"> <p class="date" >{{date_time}}</p>&nbsp;<p class="time"> {{time}}</p></td>
+        
+        <td class="test"><a href="/device/{{device_id1}}"target="_self" class="a1" ><p>See history</p></a></td>
+       <!--  </div> -->
+    </tr>
+ 
+   <!-- <li class='task' id={{id}}>weight: {{weight}}, lognitude: {{lognitude}}, latitude: {{latitude}}, time: {{time}}, date: {{date}}</li> -->
+    {{/each}}
+</table>
+
+</div>
+
+</div>
+
+
+<script >
+  function get_basic_info(){
+ var list=document.getElementsByClassName('task')
+    var pos=document.getElementsByClassName('pos')
+    var la=document.getElementsByClassName('latitude')
+    var lo=document.getElementsByClassName('lognitude')
+    var we=document.getElementsByClassName('weight')
+    var da=document.getElementsByClassName('date')
+    var ti=document.getElementsByClassName('time')
+    var locations=[]
+    var latitude=[]
+    var lognitude=[]
+    var date=[]
+    var weight=[]
+    var time=[]
+    var ids=[]
+    var names=[]
+    var position=[]
+    for(i=0;i<la.length;i++){
+        position.push( pos[i].id)
+        names.push(list[i].innerText)
+        ids.push(list[i].id)
+        latitude.push(parseFloat(la[i].innerText))
+        lognitude.push(parseFloat(lo[i].innerText))
+        locations.push([parseFloat(lo[i].innerText),parseFloat(la[i].innerText)])
+        date.push(da[i].innerText)
+        time.push(ti[i].innerText)
+        weight.push(we[i].innerText)
+    }
+
+    return position,names,ids,latitude,lognitude,locations,date,time,weight
+
+  }
+   function Asceding(pos){/*
+     position,names,ids,latitude,lognitude,locations,date,time,weight=get_basic_info()
+      var data={
+        "pos":position,
+        "weight":weight,
+        "latitude":latitude,
+        "lognitude":lognitude,
+        "date-time":{
+          "date":date,
+          "time":time
+        }
+      }
+      var main=[...data[pos]]
+      var data1={}
+      for(i=0;i<main.length;i++){
+        tmp={}
+        for(i=0;i<data.length;i++){
+          if()
+        }
+        data[main[i]]={
+          
+        }
+      }
+      
+    
+    console.log(output)*/
+    console.log(pos)
+
+   }
+
+   
+   function Desceding(pos){
+     console.log(pos)
+   }
+   
+
+  var date1=document.getElementsByClassName("date");
+  
+
+
+  for(var i=0;i<date1.length;i++){
+    var a=date1[i].innerText;
+    
+    //var da=new Date(a.substring(0,a.length-1));
+    var da=new Date(a);
+    date1[i].innerText=da.toLocaleString()
+
+
+
+  }
+
+
+
+    function find_id(id1,data){
+      var index
+      for(i=0;i<data.length;i++){
+        if(data[i].pos==id1){
+          index=i
+          return index
+        }
+      }
+
+      return null
+    }
+    
+        //takes all the longitudes and latitudes from dom
+    var list=document.getElementsByClassName('task')
+    var pos=document.getElementsByClassName('pos')
+    var la=document.getElementsByClassName('latitude')
+    var lo=document.getElementsByClassName('lognitude')
+    var we=document.getElementsByClassName('weight')
+    var da=document.getElementsByClassName('date')
+    var ti=document.getElementsByClassName('time')
+    var locations=[]
+    var latitude=[]
+    var lognitude=[]
+    var date=[]
+    var weight=[]
+    var time=[]
+    var ids=[]
+    var names=[]
+    var position=[]
+    for(i=0;i<la.length;i++){
+      position.push( pos[i].id)
+      names.push(list[i].innerText)
+        ids.push(list[i].id)
+        latitude.push(parseFloat(la[i].innerText))
+        lognitude.push(parseFloat(lo[i].innerText))
+        locations.push([parseFloat(lo[i].innerText),parseFloat(la[i].innerText)])
+        date.push(da[i].innerText)
+        time.push(ti[i].innerText)
+        weight.push(we[i].innerText)
+    }
+
+    console.log(latitude)
+    console.log(lognitude)
+    //insert code for taking the average of lat and long
+
+    //markers and pop up in map
+         var map = L.map( 'map', {
+    center: [20.0, 5.0],
+    minZoom: 2,
+    zoom: 2
+});
+        L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    subdomains: ['a','b','c']}).addTo( map );
+
+    var markers=[]
+    for(i=0;i<latitude.length;i++){
+        markers.push({
+          "id":ids[i],
+          "name":names[i],
+          "lat":latitude[i],
+          "lng":lognitude[i],
+          "weight":weight[i],
+          "date":date[i],
+          "time":time[i]
+        })
+    }
+var mark=[]
+var mark1
+var id1
+console.log(position)
+for ( var i=0; i < markers.length; ++i ) 
+{
+   
+  mark1= L.marker( [markers[i].lat, markers[i].lng] )
+      .bindPopup( '<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>' )
+      .addTo( map );
+  mark.push(
+    { 
+      pos:position[i],
+      id:ids[i],
+      mark2:mark1
+    }
+  )
+}
+ console.log(mark)
+  function OpenPopUp(id){
+      
+      var t=find_id(id,mark)
+      
+      mark[t].mark2.openPopup()
+  }
+
+    </script>
+ <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>

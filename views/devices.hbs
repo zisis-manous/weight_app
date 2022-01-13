@@ -1,11 +1,164 @@
 
-<p>Scales</p>
 
 
+<!--
+    <p>Scales</p>
 <ul class='tasks'>
     {{#each id }}
     
     <li class='task' id={{id}}>weight: {{weight}}, lognitude: {{lognitude}}, latitude: {{latitude}}, time: {{time}}, date: {{date}}</li>
     {{/each}}
 </ul>
+-->
+ <head profile="http://gmpg.org/xfn/11">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+ 
+     <!--  <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+      
+      
+     <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js'></script> -->
 
+
+  
+      <link rel="stylesheet" href="/css/device.css" />
+      <link rel="stylesheet" href="/css/navigations_bar.css" />
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+ 
+  
+   
+ </head>
+
+ <h4 class='title'>Device {{device}}</h4> 
+<div class="parent"> 
+
+
+<div id="map" class="div_map" >
+    <canvas id="myChart" ></canvas>
+</div>
+     
+
+    
+<div class="devices">
+<h2 id='scale' style="color: aliceblue;">History</h2>
+
+
+
+<table class='tasks' id="list">
+    <tr>
+     
+      <td>Weight</td>
+      <td>Lognitude</td>
+      <td>Latitude</td>
+      <td>Date-time</td>
+    <!--  <td>Date</td>-->
+    </tr>
+    {{#each id }}
+    <script>
+      console.log('hello')
+      console.log({{lognitude}})
+    </script>
+    <tr>
+      <!--<a href="/device/{{id}}"target="_self" class="a1" > -->
+     
+      
+     <!-- <div class="weight_button" id='button{{id}}' onclick="OpenPopUp({{id}})">&nbsp;-->
+        <td> <p class='weight' > {{weight}}</p> </td>
+         <td><p class="lognitude" >{{long}}</p></td>
+         <td><p class="latitude" >{{lang}} </p></td>
+        <td> <p class="date-time"> {{date_time}}</p></td>
+    <!--     <td> <p class="date" >{{date}}&nbsp;</p></td>-->
+       
+       <!--  </div> -->
+    </tr>
+ 
+   <!-- <li class='task' id={{id}}>weight: {{weight}}, lognitude: {{lognitude}}, latitude: {{latitude}}, time: {{time}}, date: {{date}}</li> -->
+    {{/each}}
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+  var wei=document.getElementsByClassName("weight");
+  var date=document.getElementsByClassName("date-time");
+  
+
+  var weights=[]
+  var dates=[]
+  var times=[]
+  var xValues=[]
+  var yValues=[]
+  for(var i=0;i<date.length;i++){
+    var a=date[i].innerText;
+    console.log(a)
+    var da=new Date(a);
+    console.log(da.toLocaleDateString())
+    date[i].innerText=da.toLocaleString()
+
+    dates.push(da.toLocaleString())
+   
+    weights.push(wei[i].innerText)
+    yValues.push(parseFloat(wei[i].innerText))
+    xValues.push(da.toLocaleString())
+
+  }
+  
+ 
+    
+//var xValues = [50,60,70,80,90,100,110,120,130,140,150];
+///var yValues = [7,8,8,9,9,9,10,11,14,14,15];
+
+//var xValues=[new Date('2020-09-30T21:00:00.000Z').toLocaleString(),new Date('2020-09-30T23:00:00.000Z').toLocaleString()]
+//var yValues=[52.3,22.2]
+
+data={
+  xValues,
+  yValues
+}
+
+
+new Chart("myChart",   {
+    type: 'line',
+    data: {
+    labels: xValues,
+    datasets: [{
+      fill: false,
+      lineTension: 0,
+      backgroundColor: "rgba(0,0,255,1.0)",
+      borderColor: "rgba(0,0,255,0.1)",
+      data: yValues
+    }]
+  },
+    options: {
+      legend: {display:false},
+        scales: {
+            x: {
+                type: 'timeseries',
+            }
+        }
+    }
+});
+ 
+/*{
+  type: "line",
+  data: {
+    labels: xValues,
+    datasets: [{
+      fill: false,
+      lineTension: 0,
+      backgroundColor: "rgba(0,0,255,1.0)",
+      borderColor: "rgba(0,0,255,0.1)",
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      yAxes: [{ticks: {min: 6, max:16}}],
+    }
+  }
+}
+);//*/
+</script>
