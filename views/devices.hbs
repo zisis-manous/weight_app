@@ -89,6 +89,7 @@
   var dates=[]
   var times=[]
   var xValues=[]
+  var da1=[]
   var yValues=[]
   for(var i=0;i<date.length;i++){
     var a=date[i].innerText;
@@ -101,11 +102,13 @@
    
     weights.push(wei[i].innerText)
     yValues.push(parseFloat(wei[i].innerText))
-    xValues.push(da.toLocaleString())
+    da1.push(da.toLocaleString())
 
   }
   
- 
+ const xValues = da1.sort((a, b) => b.date - a.date)
+
+
     
 //var xValues = [50,60,70,80,90,100,110,120,130,140,150];
 ///var yValues = [7,8,8,9,9,9,10,11,14,14,15];
