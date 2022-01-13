@@ -97,8 +97,7 @@ exports.getID=(request,response)=>{
 }
 
 exports.AddWeight=(request,response)=>{
-    console.log(request.body)
-    //if(request.body.password=="arduino"){
+    if(request.body.password=="arduino"){
     const pool1 = new Pool({
         connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
         ssl: {
@@ -115,10 +114,10 @@ exports.AddWeight=(request,response)=>{
 
 
     })
-   // }
-    //else{
-       // response.send('wrong password')
-   // }
+    }
+    else{
+        response.send('wrong password')
+    }
 }
 /*
 exports.getID=(id,request,response)=>{
