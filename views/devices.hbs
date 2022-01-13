@@ -80,7 +80,34 @@
 </div>
 
 <script>
+function find_min(array){
+  var min1;
+    for(i=0;i<array.length;i++){
+      if(i==0){
+        min1=array[i]
 
+      }
+      else{
+        if(array[i]<max1){
+          min1=array[i]
+        }
+      }
+
+    }
+    return min1
+    }
+    
+   function sort1(array){
+     var new1=[]
+     while(array.length!=0){
+    new1.push(find_min(array))
+    var index = array.indexOf(find_min(array));
+      if (index > -1) {
+        array.splice(index, 1);
+      }
+      } 
+    return new1
+   }
   var wei=document.getElementsByClassName("weight");
   var date=document.getElementsByClassName("date-time");
   
@@ -102,11 +129,14 @@
    
     weights.push(wei[i].innerText)
     yValues.push(parseFloat(wei[i].innerText))
-    da1.push(da.toLocaleString())
+    da1.push(da)
 
   }
-  
- const xValues = da1.sort((a, b) => b.date - a.date)
+  var new1=sort1(da1)
+  for(j=0;j<new1.length;j++){
+    xValues.push(new1.toLocaleString())
+  }
+ //const xValues = da1.sort((a, b) => b.date - a.date)
 
 
     
