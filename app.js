@@ -8,7 +8,7 @@ const port = '1883'
 const clientId = `mqtt_${Math.random().toString(16).slice(3)}`
 
 //Διαδρομές - Routse
-const routes = require('./routes/task-list-routes');
+const routes = require('./routes/weight-app-routes');
 app.use('/', routes);
 app.use(express.static(__dirname + '/public'));
 
