@@ -103,12 +103,39 @@ exports.getID=function(ID,client,callback){
 
 exports.add_weight=function(data,client,callback){
     client.connect()
-    const quer1=`INSERT INTO public.collection_data(
+    /*const quer1=`INSERT INTO public.collection_data(
         weight, lang, "long", date-time)
-        VALUES (${data.weight}, ${data.lang}, ${data.long}, ${data.date_time}');`
+        VALUES (${data.weight}, ${data.lang}, ${data.long}, ${data.date_time}');`*/
+    var a=new Date(data.date_time)
+    console.log(a);
+    const quer1=`INSERT INTO public.collection_data(
+        weight, lang, "long", date_time)
+        VALUES (${data.weight},${data.lang},${data.long},'${data.date_time}' );
+        insert into public.has_weight(device_id1,coll_id1) 
+        select device_id,max(coll_id) from public.collection_data, public.device
+        where device_id=${data.device_id}
+        group by device_id;`
     console.log(data)
     console.log(data.weight)
-    callback(null,'success')
+    client.connect();
+    client.query(quer1,(err,res)=>{
+            if(!err){
+            console.log(res.rows)
+           
+            
+
+            callback(null, 'success')
+
+            }
+            else{
+
+            console.log(err.message);
+            callback(err, null)
+
+            }
+
+    })
+    //callback(null,'success')
     
 }
 

@@ -1,4 +1,4 @@
-# WEIGHT APP
+# wEIGHT APP
 
 Απλή εφαρμογή υλοποίησης της εφαρμογής ΙoT για Low energy weighting systems
 της Ομάδας 2
@@ -18,12 +18,20 @@
 
 ## Το μοντέλο - The model
 Ο φάκελος `/models` περιέχει μόνο ένα μοντέλο 
-- `postgres-model.js`, παιρνει τα δεδομένα που ζητάει ο χρήστης απο την βάση και επιστρέφει 
+- `task-list-model-no-db.js`, παιρνει τα δεδομένα που ζητάει ο χρήστης απο την βάση και επιστρέφει 
 το βάρος και την τοποθεσία της συσκευής.
 
 
 
 ## Ο controller
-Στο αρχείο `/controller/weight-app-controller.js` περιέχονται οι συναρτήσεις χειρισμού του μοντέλου.
+Στο αρχείο `/controller/task-list-controller.js` περιέχονται οι συναρτήσεις χειρισμού του μοντέλου.
+
+
+
+```javascript
+const model = require('../model/task-list-model-no-db.js');
+// const model = require('../model/task-list-model-mongo.js');
+// const model = require('../model/task-list-model-postgres.js');
+```
 
 
