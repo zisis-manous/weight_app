@@ -33,7 +33,7 @@ exports.getAllWeights=function(pool,callback){
     callback(null, devices)*/
     console.log('getting data')
     var quer=
-    `select public.collection_data.coll_id as pos,is_on weight,lang,long,date_time,device_name,public.has_weight.device_id1 from public.collection_data,public.has_weight,public.device 
+    `select public.collection_data.coll_id as pos,is_on, weight,lang,long,date_time,device_name,public.has_weight.device_id1 from public.collection_data,public.has_weight,public.device 
     where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=public.device.device_id;`;
     
     ;(async function() {

@@ -59,7 +59,7 @@
       
      <!-- <div class="weight_button" id='button{{id}}' onclick="OpenPopUp({{id}})">&nbsp;-->
         
-        <td> <p class='weight' id={{is_on}}> {{weight}}</p> </td>
+        <td> <p class='weight' id={{is_on}} > {{weight}}</p> </td>
          <td><p class="lognitude" >{{long}}</p></td>
          <td><p class="latitude" >{{lang}} </p></td>
         <td class="date-time"> <p class="date" >{{date_time}}</p>&nbsp;<p class="time"> {{time}}</p></td>
@@ -79,29 +79,9 @@
 
 <script >
 
-  function change_state(id){
+  function change_state(){
     console.log('hello there')
-    console.log(id)
-    const Url="https://weight-app-g2.herokuapp.com/device/0/change_state"
-    const data={
-      "password":"arduino"
-      }
-
-   fetch(Url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Success:', data);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-
+    
   }
 
   function get_basic_info(){
@@ -273,7 +253,7 @@ for ( var i=0; i < markers.length; ++i )
 {
    
   mark1= L.marker( [markers[i].lat, markers[i].lng] )
-      .bindPopup( '<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>' +'<br>'+'<input type="button" value='+markers[i].state+' onclick="change_state('+markers[i].id+')"></input>' )
+      .bindPopup( '<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>' +'<br>'+'<input type="button" value='+markers[i].state+' onclick="change_state('+markers.id+')"></input>' )
       .addTo( map );
   mark.push(
     { 
