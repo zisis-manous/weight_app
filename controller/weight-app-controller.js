@@ -8,6 +8,7 @@ var mysql = require('mysql');
 
 
 const Pool = require("pg").Pool;
+const { reset } = require('nodemon');
 require("dotenv").config();
 const isProduction = process.env.NODE_ENV === "production";
 const connectionString = `postgresql://${process.env.PG_USER}:${process.env.PG_PASSWORD}@${process.env.PG_HOST}:${process.env.PG_PORT}/${process.env.PG_DATABASE}`;
@@ -119,6 +120,52 @@ exports.AddWeight=(request,response)=>{
     else{
         response.send('wrong password')
     }
+}
+
+exports.seeConnectivity=(request,response)=>{
+    var id=request.params.id;
+    console.log(id)
+    const pool1 = new Pool({
+        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+        });
+    model.seeConnectivity(id,pool1,(err,activity)=>{
+        if(err){
+            response.send(err);
+        }
+        response.send(activity)
+
+
+    })
+
+}
+
+exports.ChangeDeviceState=(request,response)=>{
+    var id=request.params.id;
+    if(request.body.password=="arduino"){
+        const pool1 = new Pool({
+            connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+            ssl: {
+                rejectUnauthorized: false,
+            },
+            });
+        //console.log(request.body);
+        model.ChangeDeviceState(id,pool1,(err,okay)=>{
+            //pool1.end()
+            if(err){
+                response.send(err);
+            }
+            response.send(okay)
+    
+    
+        })
+        }
+        else{
+            response.send('wrong password')
+        }
+
 }
 /*
 exports.getID=(id,request,response)=>{

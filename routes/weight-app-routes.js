@@ -51,9 +51,11 @@ router.post('/handle',(req,res)=>{
 
   res.send('okay')
 })
+
+//input new collection data
 router.post('/add_weight',deviceController.AddWeight)
 //--------------------------
-
+/*
 router.get('/db',(request,response)=>{
   //response.send('hello there')
   pool.connect();
@@ -68,25 +70,34 @@ router.get('/db',(request,response)=>{
       response.json(err.message)
     }
   })
-})
+})*/
 
 
+//check if the device is on or off
+router.get('/device/state/:id',deviceController.seeConnectivity)
+//close or open the device
+router.post('/device/:id/change_state',deviceController.ChangeDeviceState)
+//getting all the weights for homepage
 router.get('/weights', deviceController.getAllWeights);
+//getting all the weights for homepage
 router.get('/', deviceController.getAllWeights);
 //add routes for 
 //removing a task: /tasks/remove/:removeTaskId
 //adding a new task
 //toggling a task
 //router.get(`/weights/${id}`,taskListController.getID(id));
+
+//creating the page of the device history
 router.get('/device/:device_id', deviceController.getID);
 
+
+
+
+/*
 router.get('device/api/scales/:path',(request,response)=>{
     
 
 })
-
-
-
 router.post('/weight',(request,response,next)=>{
     var h=request.body;
     console.log(h.id);
@@ -112,7 +123,7 @@ router.post('/add_weight/:path', (req, res) => {
   })
 
 router.get('/input_weight/:path',deviceController.giveInputWeight)
-
+*/
 
 /*
 router.post('/delete_task',(request,response,next)=>{
