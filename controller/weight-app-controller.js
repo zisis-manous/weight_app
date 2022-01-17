@@ -62,9 +62,9 @@ exports.getAllWeights=(request,response)=>{
         if (err) {
             response.send(err);
         }
-        console.log(devices);
-        pool1.end();
         
+        //pool1.end();
+        //pool1.
         response.render('home_page', devices);
     })//*/
 }

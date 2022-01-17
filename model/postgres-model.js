@@ -20,7 +20,7 @@ exports.Task = function (taskName, status = 0, created_at = '') {
 }
 
 //Προβολή όλων των εργασιών - show all tasks
-exports.getAllWeights=function(client,callback){
+exports.getAllWeights=function(pool,callback){
     /*var data={
         devices:[
         {"id":1,"weight":2.54,"lognitude":21.708996,"latitude":41.771312,"time":"12:23","date":"12/11/2021"},
@@ -35,10 +35,12 @@ exports.getAllWeights=function(client,callback){
     var quer=
     `select public.collection_data.coll_id as pos, weight,lang,long,date_time,device_name,public.has_weight.device_id1 from public.collection_data,public.has_weight,public.device 
     where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=public.device.device_id;`;
-    client.connect();
-    client.query(quer,(err,res)=>{
+    
+    ;(async function() {
+        const client = await pool.connect()
+        await client.query(quer,(err,res)=>{
             if(!err){
-            console.log(res.rows)
+            
            
             var data={
                 devices:res.rows
@@ -46,16 +48,46 @@ exports.getAllWeights=function(client,callback){
             var devices=JSON.parse(JSON.stringify(data))
 
             callback(null, devices)
-
+            client.end()
+            
             }
             else{
 
             console.log(err.message);
             callback(err, null)
+            
 
             }
-
+            console.log('hello')
             })
+        client.release()
+        return
+    })()
+    
+    /*client.connect();
+
+    client.query(quer,(err,res)=>{
+            if(!err){
+            
+           
+            var data={
+                devices:res.rows
+            }
+            var devices=JSON.parse(JSON.stringify(data))
+
+            callback(null, devices)
+            client.end()
+            return
+            }
+            else{
+
+            console.log(err.message);
+            callback(err, null)
+            return
+
+            }
+            console.log('hello')
+            })*/
 
 
 }
@@ -76,8 +108,8 @@ exports.getID=function(ID,client,callback){
     client.query(`select * from public.collection_data,public.has_weight 
     where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=${d1};`,(err,res)=>{
     if(!err){
-      console.log(res.rows)
-      console.log(res.rows[0].date_time.toLocaleDateString())
+      
+      
       var data={
         device:d1,
         id:res.rows
@@ -85,12 +117,14 @@ exports.getID=function(ID,client,callback){
     var device=JSON.parse(JSON.stringify(data))
    
     callback(null, device)
+    return
     
     }
     else{
      
       console.log(err.message);
       callback(err, null)
+      return
       
     }
     
@@ -120,7 +154,7 @@ exports.add_weight=function(data,client,callback){
     client.connect();
     client.query(quer1,(err,res)=>{
             if(!err){
-            console.log(res.rows)
+            
            
             
 
@@ -131,6 +165,7 @@ exports.add_weight=function(data,client,callback){
 
             console.log(err.message);
             callback(err, null)
+            return
 
             }
 
@@ -139,37 +174,3 @@ exports.add_weight=function(data,client,callback){
     
 }
 
-/*
-exports.getAllTasks = function (callback) {
-    lockFile.lock(lock, (err, isLocked) => {
-        //We open the file ./model/tasks.json, read the content and save it in variable
-        //'data'
-        if (err) {
-            callback(err)
-        }
-        else {
-            fs.readFile(tasksFile, (err, data) => {
-                lockFile.unlock(lock)
-                if (err) {
-                    callback(err)
-                }
-                callback(null, JSON.parse(data))
-            })
-        }
-    })
-}
-
-//Προσθήκη εργασίας - Add a new task
-exports.addTask = function (newTask, result) {
-    //Συμπληρώστε - Code here 
-}
-
-//Αφαίρεση μιας εργασίας - remove a task
-exports.remove = function (newTask, result) {
-    //Συμπληρώστε - Code here 
-}
-
-//Αλλαγή της κατάστασης μιας εργασίας - toggle task status
-exports.toggleTask = function (taskId, result) {
-    //Συμπληρώστε - Code here 
-}*/
