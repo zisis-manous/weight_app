@@ -89,7 +89,8 @@ exports.getID=(request,response)=>{
         if (err) {
             response.send(err);
         }
-        pool.end();
+        //pool.end();
+        //console.log(device)
         response.render('devices',device)
     })
    
@@ -104,9 +105,9 @@ exports.AddWeight=(request,response)=>{
             rejectUnauthorized: false,
         },
         });
-    console.log(request.body);
+    //console.log(request.body);
     model.add_weight(request.body,pool1,(err,okay)=>{
-        pool1.end()
+        //pool1.end()
         if(err){
             response.send(err);
         }
