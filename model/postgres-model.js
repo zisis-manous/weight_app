@@ -19,7 +19,40 @@ exports.Task = function (taskName, status = 0, created_at = '') {
     this.created_at = created_at; //date of creation
 }
 
-//Προβολή όλων των εργασιών - show all tasks
+exports.getDevicesData=function(pool,callback){
+    console.log('getting data')
+    var quer=
+    `select device_id,is_on,sample_rate from public.device;`;
+    
+    ;(async function() {
+        const client = await pool.connect()
+        await client.query(quer,(err,res)=>{
+            if(!err){
+            
+           console.log(res.rows)
+            var data={
+                devices:res.rows
+            }
+            var devices=JSON.parse(JSON.stringify(data))
+
+            callback(null, devices)
+            client.end()
+            
+            }
+            else{
+
+            console.log(err.message);
+            callback(err, null)
+            
+
+            }
+            console.log('hello')
+            })
+        client.release()
+        return
+    })()
+
+}
 exports.getAllWeights=function(pool,callback){
     /*var data={
         devices:[
@@ -33,8 +66,15 @@ exports.getAllWeights=function(pool,callback){
     callback(null, devices)*/
     console.log('getting data')
     var quer=
-    `select public.collection_data.coll_id as pos,is_on, weight,lang,long,date_time,device_name,public.has_weight.device_id1 from public.collection_data,public.has_weight,public.device 
-    where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=public.device.device_id;`;
+    `with q as(
+    select public.collection_data.coll_id as pos,is_on,sample_rate, weight,lang,long,date_time,device_name,public.has_weight.device_id1 from public.collection_data,public.has_weight,public.device 
+        where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=public.device.device_id
+        
+    )
+    select public.collection_data.coll_id as pos,is_on, weight,lang,long,date_time,device_name,public.has_weight.device_id1 from public.collection_data,public.has_weight,public.device 
+        where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=public.device.device_id and coll_id in (select max(q.pos)
+    from q
+    group by q.device_id1);`;
     
     ;(async function() {
         const client = await pool.connect()

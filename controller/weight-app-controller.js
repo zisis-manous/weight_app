@@ -167,6 +167,25 @@ exports.ChangeDeviceState=(request,response)=>{
         }
 
 }
+
+exports.getDevicesData=(request,response)=>{
+    const pool1 = new Pool({
+        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+    model.getDevicesData(pool1,(err,devices)=>{
+       
+        if (err) {
+            response.send(err);
+        }
+        
+        //pool1.end();
+        //pool1.
+        response.send(devices);
+    })//*/
+}
 /*
 exports.getID=(id,request,response)=>{
     console.log(`get all weights for ${id}`)

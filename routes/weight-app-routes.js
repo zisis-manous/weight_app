@@ -90,7 +90,8 @@ router.get('/', deviceController.getAllWeights);
 //creating the page of the device history
 router.get('/device/:device_id', deviceController.getID);
 
-
+//get state and sample rate for each device
+router.get('/devices_data',deviceController.getDevicesData)
 
 
 /*
