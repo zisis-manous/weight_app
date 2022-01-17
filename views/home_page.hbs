@@ -59,7 +59,7 @@
       
      <!-- <div class="weight_button" id='button{{id}}' onclick="OpenPopUp({{id}})">&nbsp;-->
         
-        <td> <p class='weight' > {{weight}}</p> </td>
+        <td> <p class='weight' id={{is_on}}> {{weight}}</p> </td>
          <td><p class="lognitude" >{{long}}</p></td>
          <td><p class="latitude" >{{lang}} </p></td>
         <td class="date-time"> <p class="date" >{{date_time}}</p>&nbsp;<p class="time"> {{time}}</p></td>
@@ -78,6 +78,31 @@
 
 
 <script >
+
+  function change_state(id){
+    console.log('hello there')
+    console.log(id)
+    const Url="https://weight-app-g2.herokuapp.com/device/0/change_state"
+    const data={
+      "password":"arduino"
+      }
+
+   fetch(Url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Success:', data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+
+  }
 
   function get_basic_info(){
  var list=document.getElementsByClassName('task')
@@ -193,6 +218,7 @@
     var ids=[]
     var names=[]
     var position=[]
+    var state=[]
     for(i=0;i<la.length;i++){
       position.push( pos[i].id)
       names.push(list[i].innerText)
@@ -203,6 +229,13 @@
         date.push(da[i].innerText)
         time.push(ti[i].innerText)
         weight.push(we[i].innerText)
+        if(we.id==0){
+          state.push('off')
+        }
+        else{
+          state.push('on')
+        }
+       
     }
 
     console.log(latitude)
@@ -228,7 +261,8 @@
           "lng":lognitude[i],
           "weight":weight[i],
           "date":date[i],
-          "time":time[i]
+          "time":time[i],
+          "state":state[i]
         })
     }
 var mark=[]
@@ -239,7 +273,7 @@ for ( var i=0; i < markers.length; ++i )
 {
    
   mark1= L.marker( [markers[i].lat, markers[i].lng] )
-      .bindPopup( '<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>' +'<br>'+'<a href=#>on</a>' )
+      .bindPopup( '<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>' +'<br>'+'<input type="button" value='+markers[i].state+' onclick="change_state('+markers[i].id+')"></input>' )
       .addTo( map );
   mark.push(
     { 
