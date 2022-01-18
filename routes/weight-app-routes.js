@@ -49,7 +49,7 @@ const pool = new Pool({
 router.post('/handle',(req,res)=>{
   console.log(req.body)
 
-  res.send('okay')
+  res.redirect('/')
 })
 
 //input new collection data

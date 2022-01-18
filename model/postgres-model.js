@@ -68,11 +68,11 @@ exports.getAllWeights=function(pool,callback){
     console.log('getting data')
     var quer=
     `with q as(
-    select public.collection_data.coll_id as pos,is_on,sample_rate, weight,lang,long,date_time,device_name,public.has_weight.device_id1 from public.collection_data,public.has_weight,public.device 
+    select public.collection_data.coll_id as pos,is_on,sample_rate, mode,weight,lang,long,date_time,device_name,public.has_weight.device_id1 from public.collection_data,public.has_weight,public.device 
         where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=public.device.device_id
         
     )
-    select public.collection_data.coll_id as pos,is_on,sample_rate, weight,lang,long,date_time,device_name,public.has_weight.device_id1 from public.collection_data,public.has_weight,public.device 
+    select public.collection_data.coll_id as pos,is_on,sample_rate,mode, weight,lang,long,date_time,device_name,public.has_weight.device_id1 from public.collection_data,public.has_weight,public.device 
         where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=public.device.device_id and coll_id in (select max(q.pos)
     from q
     group by q.device_id1);`;
@@ -349,26 +349,32 @@ exports.ChangeDeviceState=function(id,pool,callback){
     
 }
 
-exports.ChangeDeviceSettings=(id,sample_rate,change_state,pool,callback)=>{
+exports.ChangeDeviceSettings=(id,sample_rate,change_state,mode,pool,callback)=>{
 
     console.log('changing Sample Rate')
     
     //change sample rate and device state
     var quer1
+    /*
     if(change_state==1){
          quer1=`Update public.device
         set is_on= Case When(is_on=0) then 1
-                    ELSE 0 END ,sample_rate=30
+                    ELSE 0 END ,sample_rate=${sample_rate},mode=${mode}
         where device_id=${id}`
-    }
-    else{
+    }*/
+
+    if(change_state!='hello'){
 
          quer1=`Update public.device
-    set sample_rate=${sample_rate}
+    set is_on=${change_state},sample_rate=${sample_rate},mode='${(mode)}'
     where device_id=${id};`
     }
-   
-    
+    else{
+        quer1=`Update public.device
+        set sample_rate=${sample_rate},mode='${(mode)}'
+        where device_id=${id};`
+    }
+    console.log(quer1)
     //*
     ;(async function() {
         const client = await pool.connect()

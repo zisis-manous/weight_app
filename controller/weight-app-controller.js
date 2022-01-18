@@ -189,7 +189,7 @@ exports.getDevicesData=(request,response)=>{
 }
 
 exports.Change_Device_Setting =(req,res)=>{
-    
+    var sample_rate2
     const pool1 = new Pool({
         connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
         ssl: {
@@ -197,13 +197,16 @@ exports.Change_Device_Setting =(req,res)=>{
         },
     });
     var change_state
+    if(req.body.mode=="press_mode"){
+        req.body.sample_rate=0
+    }
     if(req.body.change_state!=undefined){
         change_state=req.body.change_state
     }
     else{
-        change_state=0
+        change_state='hello'
     }
-    model.ChangeDeviceSettings(req.body.device_id,req.body.sample_rate,change_state,pool1,(err,message)=>{
+    model.ChangeDeviceSettings(req.body.device_id,req.body.sample_rate,change_state,req.body.mode,pool1,(err,message)=>{
         if (err) {
             res.send(err);
         }
