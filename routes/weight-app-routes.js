@@ -72,6 +72,7 @@ router.get('/db',(request,response)=>{
   })
 })*/
 
+router.post('/change_device_settings',deviceController.Change_Device_Setting)
 
 //check if the device is on or off
 router.get('/device/state/:id',deviceController.seeConnectivity)

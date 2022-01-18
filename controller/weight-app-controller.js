@@ -66,6 +66,7 @@ exports.getAllWeights=(request,response)=>{
         
         //pool1.end();
         //pool1.
+        //console.log(devices)
         response.render('home_page', devices);
     })//*/
 }
@@ -186,6 +187,36 @@ exports.getDevicesData=(request,response)=>{
         response.send(devices);
     })//*/
 }
+
+exports.Change_Device_Setting =(req,res)=>{
+    
+    const pool1 = new Pool({
+        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+    var change_state
+    if(req.body.change_state!=undefined){
+        change_state=req.body.change_state
+    }
+    else{
+        change_state=0
+    }
+    model.ChangeDeviceSettings(req.body.device_id,req.body.sample_rate,change_state,pool1,(err,message)=>{
+        if (err) {
+            res.send(err);
+        }
+        
+        //pool1.end();
+        //pool1.
+        res.redirect('/')
+
+    })
+    
+    
+    
+  }
 /*
 exports.getID=(id,request,response)=>{
     console.log(`get all weights for ${id}`)

@@ -32,6 +32,10 @@
 
 
 <table class='tasks' id="list">
+
+  <br>
+ 
+  <br>
     <tr>
       <!--
       <td>num <p style="font-size: xx-large;" onclick="Asceding('pos')">🠕</p><p onclick="Desceding('pos')" style="font-size: xx-large;">🠗</p></td>
@@ -49,6 +53,8 @@
       <td>Lognitude </td>
       <td>Latitude </td>
       <td>Date-Time</td>
+      <td>State of device</td>
+      <td>Sample rate</td>
     </tr>
     {{#each devices }}
     
@@ -63,7 +69,8 @@
          <td><p class="lognitude" >{{long}}</p></td>
          <td><p class="latitude" >{{lang}} </p></td>
         <td class="date-time"> <p class="date" >{{date_time}}</p>&nbsp;<p class="time"> {{time}}</p></td>
-        
+        <td><p>{{is_on}}</p></td>
+        <td><p class=sample_rate>{{sample_rate}}</p></td>
         <td class="test"><a href="/device/{{device_id1}}"target="_self" class="a1" ><p>See history</p></a></td>
        <!--  </div> -->
     </tr>
@@ -73,9 +80,22 @@
 </table>
 
 </div>
+<!--<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+<form action="/change_device_settings" method="post" target="dummyframe" >
+    <labe for="change state"  id="device_id">scale_0 is on</p><br>
+    <label for="change_state">Turn off Device</label>
+    <input type="checkbox" id="change_state" name="change_state" value="1"> <br>
+    
+    <input   type="text" name="device_id" value="0" style="display: none;" readonly>
+    <input id="rangeInput" name="sample_rate" type="range" min="1" max="30" value="30" oninput="amount.value=rangeInput.value" />
+    <input id="amount" type="number" value="30" min="1" max="30" oninput="rangeInput.value=amount.value" /><br>
+    <input type="submit" value="Save Changes">
+    </form>-->
 
-</div>
 
+  
+
+  
 
 <script >
 
@@ -92,6 +112,7 @@
     var we=document.getElementsByClassName('weight')
     var da=document.getElementsByClassName('date')
     var ti=document.getElementsByClassName('time')
+    
     var locations=[]
     var latitude=[]
     var lognitude=[]
@@ -189,6 +210,7 @@
     var we=document.getElementsByClassName('weight')
     var da=document.getElementsByClassName('date')
     var ti=document.getElementsByClassName('time')
+    var sam=document.getElementsByClassName('sample_rate')
     var locations=[]
     var latitude=[]
     var lognitude=[]
@@ -199,6 +221,8 @@
     var names=[]
     var position=[]
     var state=[]
+    var change_state1=[]
+    var sample_rate=[]
     for(i=0;i<la.length;i++){
       position.push( pos[i].id)
       names.push(list[i].innerText)
@@ -209,11 +233,14 @@
         date.push(da[i].innerText)
         time.push(ti[i].innerText)
         weight.push(we[i].innerText)
-        if(we.id==0){
+        sample_rate.push(sam[i].innerText)
+        if(we[i].id=='0'){
           state.push('off')
+          change_state1.push('on')
         }
-        else{
+        if(we[i].id=='1'){
           state.push('on')
+          change_state1.push('off')
         }
        
     }
@@ -242,18 +269,23 @@
           "weight":weight[i],
           "date":date[i],
           "time":time[i],
-          "state":state[i]
+          "state":state[i],
+          "change_state1":change_state1[i],
+          "sample_rate":sample_rate[i]
         })
     }
 var mark=[]
 var mark1
 var id1
 console.log(position)
+var form1
+
 for ( var i=0; i < markers.length; ++i ) 
 {
+ //frame1=+ 'Device</label><input type="checkbox" id="change_state" name="change_state" value="1"> <br><input   type="text" name="device_id" value='markers[i].id+' style="display: none;" readonly><input id="rangeInput" name="sample_rate" type="range" min="1" max="30" value='+markers[i].sample_rate+' oninput="amount.value=rangeInput.value" /><input id="amount" type="number"'+ value=markers[i].sample_rate+' min="1" max="30" oninput="rangeInput.value=amount.value" /><br><input type="submit" value="Save Changes"></form>'
    
   mark1= L.marker( [markers[i].lat, markers[i].lng] )
-      .bindPopup( '<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>' +'<br>'+'<input type="button" value='+markers[i].state+' onclick="change_state('+markers.id+')"></input>' )
+      .bindPopup( '<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>' +'<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe><form action="/change_device_settings" method="post"><label for="change state"  id="device_id">'+markers[i].name+'is '+markers[i].state +'</p><br><label for="change_state">Turn '+markers[i].change_state1+ ' Device</label>'+'<input type="checkbox" id="change_state" name="change_state" value="1"> <br><input   type="text" name="device_id" value='+markers[i].id+' style="display: none;" readonly><input id="rangeInput" name="sample_rate" type="range" min="1" max="30" value='+markers[i].sample_rate+' oninput="amount.value=rangeInput.value" /><input id="amount" type="number" value='+ markers[i].sample_rate+' min="1" max="30" oninput="rangeInput.value=amount.value" /><br><input type="submit" value="Save Changes"></form>')
       .addTo( map );
   mark.push(
     { 
