@@ -23,7 +23,7 @@ exports.Task = function (taskName, status = 0, created_at = '') {
 exports.getDevicesData=function(pool,callback){
     console.log('getting data')
     var quer=
-    `select device_id,is_on,sample_rate from public.device;`;
+    `select device_id,is_on,sample_rate,mode from public.device;`;
     
     ;(async function() {
         const client = await pool.connect()
