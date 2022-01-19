@@ -98,7 +98,8 @@
     var opt=document.getElementById('limit')
     var new_lim=opt.options[opt.selectedIndex].value
     var a =document.getElementById('limit1')
-    var href=a.href.substring(0,37)
+    //var href=a.href.substring(0,37)
+    var href =a.href.substring(0,51)
     href=href+String(new_lim)
     a.href=href
     console.log(a.href)
