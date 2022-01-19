@@ -9,6 +9,7 @@ var mysql = require('mysql');
 
 const Pool = require("pg").Pool;
 const { reset } = require('nodemon');
+const req = require('express/lib/request');
 require("dotenv").config();
 const isProduction = process.env.NODE_ENV === "production";
 const connectionString = `postgresql://${process.env.PG_USER}:${process.env.PG_PASSWORD}@${process.env.PG_HOST}:${process.env.PG_PORT}/${process.env.PG_DATABASE}`;
@@ -85,14 +86,20 @@ exports.getID=(request,response)=>{
         rejectUnauthorized: false,
     },
     });
+     var limit
+     limit=10
+     
+     
      
     console.log(request.params.device_id)
-    model.getID(request.params.device_id,pool,(err,device)=>{
+    model.getID(request.params.device_id,limit,pool,(err,device)=>{
         if (err) {
             response.send(err);
         }
         //pool.end();
         //console.log(device)
+        device['limit']=limit
+       
         response.render('devices',device)
     })
    
@@ -220,6 +227,33 @@ exports.Change_Device_Setting =(req,res)=>{
     
     
   }
+
+exports.DataPlot=(request,response)=>{
+    const pool = new Pool({
+        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+        });
+         var limit
+         limit=request.params.lim
+         
+         
+       
+        console.log(request.params.id)
+        model.getID(request.params.id,limit,pool,(err,device)=>{
+            if (err) {
+                response.send(err);
+            }
+            //pool.end();
+            //console.log(device)
+            
+           console.log(device)
+            response.render('devices',device)
+        })
+       
+       
+}
 /*
 exports.getID=(id,request,response)=>{
     console.log(`get all weights for ${id}`)

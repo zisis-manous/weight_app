@@ -23,7 +23,7 @@ exports.Task = function (taskName, status = 0, created_at = '') {
 exports.getDevicesData=function(pool,callback){
     console.log('getting data')
     var quer=
-    `select device_id,is_on,sample_rate,mode from public.device;`;
+    ` select device_id,is_on,sample_rate,mode from public.device order by device_id ASC;`;
     
     ;(async function() {
         const client = await pool.connect()
@@ -132,7 +132,7 @@ exports.getAllWeights=function(pool,callback){
 
 
 }
-exports.getID=function(ID,pool,callback){
+exports.getID=function(ID,limit,pool,callback){
     var d1=ID
     
     console.log(`d1 is ${d1}`)
@@ -146,18 +146,31 @@ exports.getID=function(ID,pool,callback){
     }
     var device=JSON.parse(JSON.stringify(data))*/
     var quer=`select * from public.collection_data,public.has_weight 
-    where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=${d1};`
+    where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=${d1} ORDER BY date_time ASC LIMIT ${limit};`
     //* 
+
+    var quer1=`with row_count as (
+        select COUNT(*) as row1 from public.collection_data,public.has_weight 
+            where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=${d1}
+    ),
+    q1 as (
+    select * from public.collection_data,public.has_weight,row_count
+            where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=${d1}
+            order by date_time DESC
+            limit ${limit})
+            
+    select * from q1 
+    order by date_time ASC`
     ;(async function() {
         const client = await pool.connect()
-        await client.query(`select * from public.collection_data,public.has_weight 
-        where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=${d1};`,(err,res)=>{
+        await client.query(quer1,(err,res)=>{
             if(!err){
             
            
              var data={
                 device:d1,
-                id:res.rows
+                id:res.rows,
+                lim:limit
             }
             var device=JSON.parse(JSON.stringify(data))
             //console.log(devices)
@@ -273,9 +286,7 @@ exports.seeConnectivity=function(id,pool,callback){
         weight, lang, "long", date-time)
         VALUES (${data.weight}, ${data.lang}, ${data.long}, ${data.date_time}');`*/
     
-    const quer1=`select is_on 
-    from public.device
-    where device_id=${id};`
+    const quer1=` select device_id,is_on,sample_rate,mode from public.device where device_id=${id};`
     //console.log(data)
     
     //*

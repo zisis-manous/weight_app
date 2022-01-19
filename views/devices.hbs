@@ -40,16 +40,30 @@
     
 <div class="devices">
 <h2 id='scale' style="color: aliceblue;">History</h2>
+<p>{{lim}}</p>
 
-
-
+<div style="color: aliceblue;">Υπάρχουν <div id='metriseis' style="color: aliceblue;">{{id.0.row1}}</div> Μετρήσεις</div> 
 <table class='tasks' id="list">
+
     <tr>
      
       <td>Weight</td>
       <td>Lognitude</td>
       <td>Latitude</td>
       <td>Date-time</td>
+      <td>
+       
+      
+        <label for="limit">choose data:</label>
+        <select id="limit" name="{{lim}}" onchange="change_ref();">
+        <!--   <input type="text" id="device_id" name="device_id"  style="display:none;" value={{device}} readonly>  -->
+        <option value={{lim}} >{{lim}}</option> 
+         
+          
+        </select>
+      <button  value="Get Data"  ><a id='limit1' style="color: #2b2b2b; text-decoration: none;" href='/device/{{device}}/limit/{{lim}}'>more data</a></button>
+     
+      </td>
     <!--  <td>Date</td>-->
     </tr>
     {{#each id }}
@@ -80,6 +94,36 @@
 </div>
 
 <script>
+  function change_ref(){
+    var opt=document.getElementById('limit')
+    var new_lim=opt.options[opt.selectedIndex].value
+    var a =document.getElementById('limit1')
+    var href=a.href.substring(0,37)
+    href=href+String(new_lim)
+    a.href=href
+    console.log(a.href)
+  }
+  var metriseis=document.getElementById('metriseis');
+  var row1=parseInt(metriseis.innerText)
+  var select = document.getElementById('limit');
+  var current_lim=parseInt(select.name)
+  if(row1>20){
+    // <select id="limit" name="limit">
+    //<option value="20">20</option>
+    var opt_data=[]
+    var option
+    var i
+    for(i=10;i<=row1;i=i+10){
+      if(i!=current_lim){
+      option=document.createElement('option');
+      option.value=i
+      option.innerHTML=i
+     
+      select.appendChild(option)}
+    }
+    
+  }
+  
 
   var wei=document.getElementsByClassName("weight");
   var date=document.getElementsByClassName("date-time");

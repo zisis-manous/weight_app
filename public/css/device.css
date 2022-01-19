@@ -26,6 +26,7 @@ body{
     padding-left: 2%;
     
 }
+/*
 @media screen and (min-width: 1500px){
     .parent{
         display: grid;
@@ -33,9 +34,9 @@ body{
     }
 
 
-}
+}*/
 .map {
-    height: 400px;
+    height:200px;
     width: 500px;
     margin-left: 5%;
     padding-right: 2%;

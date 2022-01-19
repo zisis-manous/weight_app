@@ -49,9 +49,14 @@ const pool = new Pool({
 router.post('/handle',(req,res)=>{
   console.log(req.body)
 
-  res.redirect('/')
+  res.redirect('/device/0')
 })
 
+router.post('/data_plot',deviceController.DataPlot)
+router.get('/device/:id/more',(req,res)=>{
+  console.log(req)
+  res.send('okay')
+})
 //input new collection data
 router.post('/add_weight',deviceController.AddWeight)
 //--------------------------
@@ -74,7 +79,7 @@ router.get('/db',(request,response)=>{
 
 router.post('/change_device_settings',deviceController.Change_Device_Setting)
 
-//check if the device is on or off
+//check device state(if its operational ,sample rate and mode)
 router.get('/device/state/:id',deviceController.seeConnectivity)
 //close or open the device
 router.post('/device/:id/change_state',deviceController.ChangeDeviceState)
@@ -91,8 +96,10 @@ router.get('/', deviceController.getAllWeights);
 //creating the page of the device history
 router.get('/device/:device_id', deviceController.getID);
 
-//get state and sample rate for each device
+//get state and sample rate  and mode for all the devices
 router.get('/devices_data',deviceController.getDevicesData)
+
+router.get('/device/:id/limit/:lim',deviceController.DataPlot)
 
 
 /*
