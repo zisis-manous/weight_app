@@ -16,7 +16,6 @@ const connectionString = `postgresql://${process.env.PG_USER}:${process.env.PG_P
 
 
 
-
 exports.getAllTasks = (req, res) => {
     console.log("getAllTasks")
     model.getAllTasks((err, tasks) => {
@@ -33,6 +32,8 @@ exports.giveInputWeight=(req,res)=>{
 }
 exports.getAllWeights=(request,response)=>{
     console.log('get all weights')
+    //console.log(request.user)
+    var user=request.user
     /*const client2=new Client({
         host: "localhost",
         user:"postgres",
@@ -68,7 +69,21 @@ exports.getAllWeights=(request,response)=>{
         //pool1.end();
         //pool1.
         //console.log(devices)
-        response.render('home_page', devices);
+        var a
+        if(user!=undefined){
+         a={
+            'username':user.name,
+            'id1':user.id,
+            devices
+        }}
+        else{
+            a={
+                devices
+            }
+        }
+        console.log(a)
+        var data=JSON.parse(JSON.stringify(a))
+        response.render('home_page', data);
     })//*/
 }
 exports.getID=(request,response)=>{
@@ -89,7 +104,7 @@ exports.getID=(request,response)=>{
      var limit
      limit=10
      
-     
+     var user=request.user
      
     console.log(request.params.device_id)
     model.getID(request.params.device_id,limit,pool,(err,device)=>{
@@ -99,7 +114,23 @@ exports.getID=(request,response)=>{
         //pool.end();
         //console.log(device)
         device['limit']=limit
-       
+        var a
+        if(user!=undefined){
+         a={
+            'username':user.name,
+            'id1':user.id,
+            device
+        }
+        device['username']=user.name
+        device['id1']=user.id
+    }
+        else{
+            a={
+                device
+            }
+        }
+        var data=JSON.parse(JSON.stringify(a))
+        console.log(data)
         response.render('devices',device)
     })
    
@@ -238,7 +269,7 @@ exports.DataPlot=(request,response)=>{
          var limit
          limit=request.params.lim
          
-         
+         var user=request.user
        
         console.log(request.params.id)
         model.getID(request.params.id,limit,pool,(err,device)=>{
@@ -247,12 +278,148 @@ exports.DataPlot=(request,response)=>{
             }
             //pool.end();
             //console.log(device)
-            
-           console.log(device)
+            var a
+            if(user!=undefined){
+             a={
+                'username':user.name,
+                'id1':user.id,
+                device
+            }
+            device['username']=user.name
+            device['id1']=user.id
+        }
+            console.log(device.username)
+           console.log(device.lim)
             response.render('devices',device)
         })
        
        
+}
+
+
+exports.RefreshHomepage=(request,response)=>{
+    const pool1 = new Pool({
+        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+    model.Refresh_Homepage(pool1,(err,devices)=>{
+       
+        if (err) {
+            response.send(err);
+        }
+        
+        //pool1.end();
+        //pool1.
+        //console.log(devices)
+        response.send( devices);
+    })//*/
+}
+
+exports.loginUser=(request,response)=>{
+
+    console.log(request)
+    response.send('okay')
+}
+exports.registerUser=(request,response)=>{
+    
+    const pool1 = new Pool({
+        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+        model.EmailExists(pool1,request.body.email,(err,return_message)=>{
+            console.log(return_message)
+            if (err) {
+                response.send(err)
+            }
+            else if(return_message.length==0){
+                model.AddUser(pool1,request,(err,return_message)=>{
+        
+                    if (err) {
+                        response.send(err)
+                    }
+                    
+                   response.redirect('/login')
+                   // response.send(return_message)
+                    //pool1.end();
+                    //pool1.
+                    //console.log(devices)
+                    
+                })
+
+
+            }
+            else{
+                response.render('register',{email:1})
+            }
+
+        })
+    
+        /*
+        model.AddUser(pool1,request,(err,return_message)=>{
+        
+            if (err) {
+                response.render('register',{email:1})
+            }
+            
+           response.redirect('/login')
+           // response.send(return_message)
+            //pool1.end();
+            //pool1.
+            //console.log(devices)
+            
+        })//*/
+    
+}
+
+exports.signUser=(user,password,callback)=>{
+    
+    /*if(user=='zisismanous@gmail.com' || user=='test@gmail.com'){
+        let authenticated_user = { id: 123, name: user}
+        callback(null,authenticated_user)
+        return
+    }
+    else{
+        callback(null,null)
+        return
+    }*/
+    const pool1 = new Pool({
+        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+    model.signUser(pool1,user,password,(err,user_det)=>{
+        console.log('have accessed postgress')
+        //console.log(user_det)
+        if (err) {
+            console.log(err)
+            return callback(null,null)
+        }
+        else if(user_det.length==0){
+            return callback(null,null)
+            
+        }
+        else{
+            console.log('returning authenticated user')
+            let authenticated_user = user_det
+            //console.log('auth user')
+            //console.log(authenticated_user)
+            //let authenticated_user = { id: 123, name: user}
+            return callback(null,authenticated_user[0])
+            
+
+        }
+
+    })
+    
+    
+    
+
+
 }
 /*
 exports.getID=(id,request,response)=>{

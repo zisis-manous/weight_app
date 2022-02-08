@@ -134,7 +134,7 @@ exports.getAllWeights=function(pool,callback){
 }
 exports.getID=function(ID,limit,pool,callback){
     var d1=ID
-    
+    console.log(limit)
     console.log(`d1 is ${d1}`)
     /*var data={
         device:d1,
@@ -172,6 +172,7 @@ exports.getID=function(ID,limit,pool,callback){
                 id:res.rows,
                 lim:limit
             }
+            console.log(data.lim)
             var device=JSON.parse(JSON.stringify(data))
             //console.log(devices)
             callback(null, device)
@@ -406,4 +407,158 @@ exports.ChangeDeviceSettings=(id,sample_rate,change_state,mode,pool,callback)=>{
         client.release()
         return
     })()//*/
+}
+
+exports.Refresh_Homepage=function(pool,callback){
+   
+    /*const quer1=`INSERT INTO public.collection_data(
+        weight, lang, "long", date-time)
+        VALUES (${data.weight}, ${data.lang}, ${data.long}, ${data.date_time}');`*/
+    
+    const quer1=` select 
+    MAX(coll_id) from public.collection_data ;`
+    //console.log(data)
+    
+    //*
+    ;(async function() {
+        const client = await pool.connect()
+        await client.query(quer1,(err,res)=>{
+            if(!err){
+            
+           
+             var data={
+                device:res.rows
+            }
+            var device=JSON.parse(JSON.stringify(data))
+            //console.log(devices)
+            callback(null, device)
+            client.end()
+            
+            }
+            else{
+
+            console.log(err.message);
+            callback(err, null)
+            
+
+            }
+            console.log('hello')
+            })
+        client.release()
+        return
+    })()//*/
+    
+    
+    
+}
+exports.EmailExists=(pool,email,callback)=>{
+    
+    const quer1=`SELECT username
+    FROM users
+   WHERE email = '${email}' `
+
+    
+    //console.log(data)
+    
+    ///*
+    ;(async function() {
+        const client = await pool.connect()
+        await client.query(quer1,(err,res)=>{
+            if(!err){
+                
+                callback(null,res.rows)
+    
+                }
+                else{
+    
+                //console.log(err.message);
+                callback(err, null)
+                
+            }
+            console.log('hello')
+            })
+        client.release()
+        return
+    })()
+
+}
+
+
+exports.AddUser=(pool,req,callback)=>{
+    
+    //callback(null,'re')
+    
+    
+   //*
+
+    const quer1=`INSERT INTO public.users (email,username, password) VALUES (
+        '${req.body.email}','${req.body.username}',
+        crypt('${req.body.psw}', gen_salt('bf'))
+      );`
+
+    
+    //console.log(data)
+    
+    ///*
+    ;(async function() {
+        const client = await pool.connect()
+        await client.query(quer1,(err,res)=>{
+            if(!err){
+            
+                callback(null, 'success')
+    
+                }
+                else{
+    
+                //console.log(err.message);
+                callback(err, null)
+                
+            }
+            console.log('hello')
+            })
+        client.release()
+        return
+    })()
+
+
+//*/
+}
+
+exports.signUser=(pool,user,password,callback)=>{
+
+    console.log('getting data')
+    
+    var quer=
+    ` SELECT username,userid
+    FROM public.users
+   WHERE email = '${user}'
+    AND password = crypt('${password}', password);`;
+
+    
+    
+    ;(async function() {
+        const client = await pool.connect()
+        await client.query(quer,(err,res)=>{
+            if(!err){
+            
+           console.log(res.rows)
+           console.log('getting data from postgress')
+            
+            callback(null, res.rows)
+            client.end()
+            
+            }
+            else{
+
+            console.log(err.message);
+            callback(err, null)
+            
+
+            }
+            console.log('hello')
+            })
+        client.release()
+        return
+    })()
+
 }

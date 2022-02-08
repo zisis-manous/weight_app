@@ -1,24 +1,31 @@
- <head profile="http://gmpg.org/xfn/11">
+   <!-- <head profile="http://gmpg.org/xfn/11">
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
 
-     <!--  <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
       
       
-     <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js'></script> -->
+     <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js'></script> 
+        <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>-->
 
-
-      <link rel="stylesheet" href="/leaflet.css" />
+<head>
+       <link rel="stylesheet" href="/leaflet.css" />
       <link rel="stylesheet" href="/css/weight.css" />
       <link rel="stylesheet" href="/css/navigations_bar.css" />
       <script src="/leaflet.js"></script>
  
  
   
-    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
+ 
     <title>OpenLayers example</title>
   </head>
   <body>
+      {{#if username}}
+        
+      <p style="display:none" id='1' class="check_if_signed"></p>
+         {{else}}
+       <p style="display:none" id='0' class="check_if_signed"></p>
+       {{/if}}
   
 <div class="parent"> 
 
@@ -57,9 +64,9 @@
       <td>Mode</td>
       <td>Sample rate</td>
     </tr>
-    {{#each devices }}
+    {{#each devices.devices }}
     
-    <tr>
+    <tr id='main{{device_id1}}'>
       <td class="pos" id={{pos}}>{{pos}}</td>
       <!--<a href="/device/{{id}}"target="_self" class="a1" > -->
       <td class="td_device" onclick="OpenPopUp({{pos}})"> <p class='task' id={{device_id1}}>{{device_name}}&nbsp;</p></td>
@@ -103,7 +110,39 @@
 
 <script >
 
- 
+ //test
+ //ΝΑ ΑΛΛΑΞΩ ΠΡΑΓΜΑΤΑ
+async function Refresh_page (pos) {
+   fetch('/refresh_homepage')
+      .then( async (response) => {
+
+        // get json response here
+        let data = await response.json();
+        
+        
+        if(response.status === 200){
+         // Process data here
+        }else{
+         // Rest of status codes (400,500,303), can be handled here appropriately
+        }
+        console.log(data.device[0].max)
+        if( data.device[0].max!=undefined){
+          return data.device[0].max
+
+        }
+
+      })
+      .catch((err) => {
+          console.log(err);
+      })
+     
+}
+
+function check_refresh(max_pos,ms){
+  setInterval(Refresh_page(max_pos),ms)
+}
+
+ //-----------------
 
   function get_basic_info(){
  var list=document.getElementsByClassName('task')
@@ -113,7 +152,7 @@
     var we=document.getElementsByClassName('weight')
     var da=document.getElementsByClassName('date')
     var ti=document.getElementsByClassName('time')
-    
+    var refresh_check=0
     var locations=[]
     var latitude=[]
     var lognitude=[]
@@ -125,6 +164,9 @@
     var position=[]
     for(i=0;i<la.length;i++){
         position.push( pos[i].id)
+        if(parseInt(pos[i].id)>=refresh_check){
+          refresh_check=pos[i].id
+        }
         names.push(list[i].innerText)
         ids.push(list[i].id)
         latitude.push(parseFloat(la[i].innerText))
@@ -213,6 +255,11 @@
     var ti=document.getElementsByClassName('time')
     var sam=document.getElementsByClassName('sample_rate')
     var mode=document.getElementsByClassName('mode')
+    var check_if_signed=document.getElementsByClassName('check_if_signed')
+    var signed=check_if_signed[0].id
+    console.log('signed?')
+    console.log(signed)
+
     var locations=[]
     var latitude=[]
     var lognitude=[]
@@ -234,8 +281,13 @@
     var div_options=[]
     var div_display=[]
     var turn_device=[]
+    var refresh_check=0
     for(i=0;i<la.length;i++){
       position.push( pos[i].id)
+
+       if(parseInt(pos[i].id)>=refresh_check){
+          refresh_check=parseInt(pos[i].id)
+        }
       names.push(list[i].innerText)
         ids.push(list[i].id)
         latitude.push(parseFloat(la[i].innerText))
@@ -287,118 +339,157 @@
 
     console.log(latitude)
     console.log(lognitude)
+    function find_average(list){
+      var sum=0
+      for(i=0;i<list.length;i++){
+        sum=sum+list[i]
+      }
+
+      return sum/list.length
+    }
+    var mean_long=find_average(lognitude)
+    var mean_lat=find_average(latitude)
     //insert code for taking the average of lat and long
-
-    //markers and pop up in map
-         var map = L.map( 'map', {
-    center: [20.0, 5.0],
-    minZoom: 2,
-    zoom: 2
-});
-        L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    subdomains: ['a','b','c']}).addTo( map );
-
-    var markers=[]
-    for(i=0;i<latitude.length;i++){
-        markers.push({
-          "id":ids[i],
-          "name":names[i],
-          "lat":latitude[i],
-          "lng":lognitude[i],
-          "weight":weight[i],
-          "date":date[i],
-          "time":time[i],
-          "state":state[i],
-          "change_state1":change_state1[i],
-          "sample_rate":sample_rate[i],
-          "reqular":reqular[i],
-          "press":press[i],
-          "psm":psm[i],
-          "min_st":min_st[i],
-          "max_st":max_st[i],
-          "div_display":div_display[i],
-          "monada":monada[i],
-          "div_option":div_options[i],
-          "turn_device":turn_device[i]
-
-        })
-    }
-var mark=[]
-var mark1
-var id1
-console.log(position)
-var form1
- function test(){
-    console.log('hello there')
-    var r1=document.getElementById('more_options')
-    r1.style.display='block'
-    var t=rangeInput
-    var t1=amount
-    var r=document.getElementById('sample_rate_label')
-    r.innerText=''
-    r.innerText='Choose sample rate(hours)'
-    
-    t.min='1'
-    t1.min='1'
-    t.value='1'
-    t1.value='1'
-    t.max='6'
-    t1.max='6'
-}
- function test1(){
-    console.log('hello there')
-    var r1=document.getElementById('more_options')
-    r1.style.display='block'
-    var r=document.getElementById('sample_rate_label')
-    r.innerText=''
-    r.innerText='Choose sample rate(seconds)'
-    var t=rangeInput
-    var t1=amount
-    
-    t.min='30'
-    t1.min='30'
-    t.value='30'
-    t1.value='30'
-    t.max='60'
-    t1.max='60'
-}
- function test2(){
-    console.log('hello there')
-    var r1=document.getElementById('more_options')
-    r1.style.display='none'
   
-}
-function change_options(){
-  var r1=change_state
-  var t1=document.getElementById('all_options')
-  console.log(r1.checked)
-  if(t1.style.display=='none'){
-    t1.style.display='block'
-  }
-  else{
-    t1.style.display='none'
-  }
-}
-      
-      //.bindPopup( '<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>' +'<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe><form action="/handle" method="post"><label for="change state"  id="device_id">'+markers[i].name+'is '+markers[i].state +'</p><br><label for="change_state">Turn '+markers[i].change_state1+ ' Device</label>'+'<input type="checkbox" id="change_state" name="change_state" value="1"><br> <label for=press_mode>press mode</label><input  type="radio" id=psm onclick="test2()" name="mode" value="press_mode" checked='+markers[i].press+'><br><label for=psm>power save mode</label><input  type="radio" id=psm onclick="test()" name="mode" value="psm" checked='+markers[i].psm+'><br><label for=reqular'+markers[i].id+'>reqular mode</label><input  type="radio" id=reqular'+markers[i].id+' onclick="test1()" name="mode" value="reqular" checked='+markers[i].reqular+' ><br><div id='+'more_options'+'><input   type="text" name="device_id" value='+markers[i].id+' style="display: none;" readonly><label for="sample_rate" display="style:'+markers[i].div_display+'"id='+'sample_rate_label'+'>Choose sample rate('+markes[i].monada+')</label><br><input id="rangeInput" name="sample_rate" type="range" min='+markes[i].min_st+' max='+markers[i].max_st+' value='+markers[i].sample_rate+' oninput="amount.value=rangeInput.value" /><input id="amount" type="number" value='+ markers[i].sample_rate+'min='+markes[i].min_st+' max='+markers[i].max_st+' oninput="rangeInput.value=amount.value" /><br></div><input type="submit" value="Save Changes"></form>')
+              //markers and pop up in map
+                  var map = L.map( 'map', {
+              center: [20.0, 5.0],
+              minZoom: 2,
+              zoom: 2
+                }).setView([mean_lat	,mean_long ], 18-latitude.length);
+                  L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+              subdomains: ['a','b','c']}).addTo( map );
 
+              var markers=[]
+              for(i=0;i<latitude.length;i++){
+                  markers.push({
+                    "id":ids[i],
+                    "name":names[i],
+                    "lat":latitude[i],
+                    "lng":lognitude[i],
+                    "weight":weight[i],
+                    "date":date[i],
+                    "time":time[i],
+                    "state":state[i],
+                    "change_state1":change_state1[i],
+                    "sample_rate":sample_rate[i],
+                    "reqular":reqular[i],
+                    "press":press[i],
+                    "psm":psm[i],
+                    "min_st":min_st[i],
+                    "max_st":max_st[i],
+                    "div_display":div_display[i],
+                    "monada":monada[i],
+                    "div_option":div_options[i],
+                    "turn_device":turn_device[i]
 
-for ( var i=0; i < markers.length; ++i ) 
-{
- //frame1=+ 'Device</label><input type="checkbox" id="change_state" name="change_state" value="1"> <br><input   type="text" name="device_id" value='markers[i].id+' style="display: none;" readonly><input id="rangeInput" name="sample_rate" type="range" min="1" max="30" value='+markers[i].sample_rate+' oninput="amount.value=rangeInput.value" /><input id="amount" type="number"'+ value=markers[i].sample_rate+' min="1" max="30" oninput="rangeInput.value=amount.value" /><br><input type="submit" value="Save Changes"></form>'
-   
-  mark1= L.marker( [markers[i].lat, markers[i].lng] )
-      .bindPopup( '<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>' +'<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe><form action="/change_device_settings" method="post"><label for="change state"  id="device_id">'+markers[i].name+'is '+markers[i].state +'</p><br><label for="change_state">Turn '+markers[i].change_state1+ ' Device</label>'+'<input type="checkbox" id="change_state" name="change_state" onclick="change_options()" value='+markers[i].turn_device+'><br><div id='+'all_options '+markers[i].div_option+'> <label for=press_mode>press mode</label><input  type="radio" id=psm onclick="test2()" name="mode" value="press_mode" '+markers[i].press+'><br><label for=psm>power save mode</label><input  type="radio" id=psm onclick="test()" name="mode" value="psm" '+markers[i].psm+'><br><label for=reqular'+markers[i].id+'>reqular mode</label><input  type="radio" id=reqular'+markers[i].id+' onclick="test1()" name="mode" value="reqular" '+markers[i].reqular+' ><br><div id='+'more_options'+''+markers[i].div_display+'><input   type="text" name="device_id" value='+markers[i].id+' style="display: none;" readonly><label for="sample_rate" id='+'sample_rate_label'+'>Choose sample rate('+markers[i].monada+')</label><br><input id="rangeInput" name="sample_rate" type="range" min='+markers[i].min_st+' max='+markers[i].max_st+' value='+markers[i].sample_rate+' oninput="amount.value=rangeInput.value" /><input id="amount" type="number" value='+ markers[i].sample_rate+' min='+markers[i].min_st+' max='+markers[i].max_st+' oninput="rangeInput.value=amount.value" /><br></div></div><input type="submit" value="Save Changes"></form>')
-      .addTo( map );
-  mark.push(
-    { 
-      pos:position[i],
-      id:ids[i],
-      mark2:mark1
-    }
-  )
-}
+                  })
+              }
+           
+          var mark=[]
+          var mark1
+          var id1
+          console.log(position)
+          var form1
+          function test(){
+              console.log('hello there')
+              var r1=document.getElementById('more_options')
+              r1.style.display='block'
+              var t=rangeInput
+              var t1=amount
+              var r=document.getElementById('sample_rate_label')
+              r.innerText=''
+              r.innerText='Choose sample rate(hours)'
+              
+              t.min='1'
+              t1.min='1'
+              t.value='1'
+              t1.value='1'
+              t.max='6'
+              t1.max='6'
+          }
+          function test1(){
+              console.log('hello there')
+              var r1=document.getElementById('more_options')
+              r1.style.display='block'
+              var r=document.getElementById('sample_rate_label')
+              r.innerText=''
+              r.innerText='Choose sample rate(seconds)'
+              var t=rangeInput
+              var t1=amount
+              
+              t.min='30'
+              t1.min='30'
+              t.value='30'
+              t1.value='30'
+              t.max='60'
+              t1.max='60'
+          }
+          function test2(){
+              console.log('hello there')
+              var r1=document.getElementById('more_options')
+              r1.style.display='none'
+            
+          }
+          function change_options(){
+            var r1=change_state
+            var t1=document.getElementById('all_options')
+            console.log(r1.checked)
+            if(t1.style.display=='none'){
+              t1.style.display='block'
+            }
+            else{
+              t1.style.display='none'
+            }
+          }
+                
+                //.bindPopup( '<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>' +'<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe><form action="/handle" method="post"><label for="change state"  id="device_id">'+markers[i].name+'is '+markers[i].state +'</p><br><label for="change_state">Turn '+markers[i].change_state1+ ' Device</label>'+'<input type="checkbox" id="change_state" name="change_state" value="1"><br> <label for=press_mode>press mode</label><input  type="radio" id=psm onclick="test2()" name="mode" value="press_mode" checked='+markers[i].press+'><br><label for=psm>power save mode</label><input  type="radio" id=psm onclick="test()" name="mode" value="psm" checked='+markers[i].psm+'><br><label for=reqular'+markers[i].id+'>reqular mode</label><input  type="radio" id=reqular'+markers[i].id+' onclick="test1()" name="mode" value="reqular" checked='+markers[i].reqular+' ><br><div id='+'more_options'+'><input   type="text" name="device_id" value='+markers[i].id+' style="display: none;" readonly><label for="sample_rate" display="style:'+markers[i].div_display+'"id='+'sample_rate_label'+'>Choose sample rate('+markes[i].monada+')</label><br><input id="rangeInput" name="sample_rate" type="range" min='+markes[i].min_st+' max='+markers[i].max_st+' value='+markers[i].sample_rate+' oninput="amount.value=rangeInput.value" /><input id="amount" type="number" value='+ markers[i].sample_rate+'min='+markes[i].min_st+' max='+markers[i].max_st+' oninput="rangeInput.value=amount.value" /><br></div><input type="submit" value="Save Changes"></form>')
+
+      if(signed=='0'){
+          for ( var i=0; i < markers.length; ++i ) 
+          {
+          //frame1=+ 'Device</label><input type="checkbox" id="change_state" name="change_state" value="1"> <br><input   type="text" name="device_id" value='markers[i].id+' style="display: none;" readonly><input id="rangeInput" name="sample_rate" type="range" min="1" max="30" value='+markers[i].sample_rate+' oninput="amount.value=rangeInput.value" /><input id="amount" type="number"'+ value=markers[i].sample_rate+' min="1" max="30" oninput="rangeInput.value=amount.value" /><br><input type="submit" value="Save Changes"></form>'
+            
+            mark1= L.marker( [markers[i].lat, markers[i].lng] )
+              
+                .bindPopup( '<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>')
+
+                .addTo( map );
+            mark.push(
+              { 
+                pos:position[i],
+                id:ids[i],
+                mark2:mark1
+              }
+            )
+          }
+      }
+      else{
+        console.log('IS SIGNEDDDD')
+            for ( var i=0; i < markers.length; ++i ) 
+          {
+          //frame1=+ 'Device</label><input type="checkbox" id="change_state" name="change_state" value="1"> <br><input   type="text" name="device_id" value='markers[i].id+' style="display: none;" readonly><input id="rangeInput" name="sample_rate" type="range" min="1" max="30" value='+markers[i].sample_rate+' oninput="amount.value=rangeInput.value" /><input id="amount" type="number"'+ value=markers[i].sample_rate+' min="1" max="30" oninput="rangeInput.value=amount.value" /><br><input type="submit" value="Save Changes"></form>'
+            
+            mark1= L.marker( [markers[i].lat, markers[i].lng] )
+              
+                .bindPopup( '<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>' +'<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe><form action="/change_device_settings" method="post"><label for="change state"  id="device_id">'+markers[i].name+'is '+markers[i].state +'</p><br><label for="change_state">Turn '+markers[i].change_state1+ ' Device</label>'+'<input type="checkbox" id="change_state" name="change_state" onclick="change_options()" value='+markers[i].turn_device+'><br><div id='+'all_options '+markers[i].div_option+'> <label for=press_mode>press mode</label><input  type="radio" id=psm onclick="test2()" name="mode" value="press_mode" '+markers[i].press+'><br><label for=psm>power save mode</label><input  type="radio" id=psm onclick="test()" name="mode" value="psm" '+markers[i].psm+'><br><label for=reqular'+markers[i].id+'>reqular mode</label><input  type="radio" id=reqular'+markers[i].id+' onclick="test1()" name="mode" value="reqular" '+markers[i].reqular+' ><br><div id='+'more_options'+''+markers[i].div_display+'><input   type="text" name="device_id" value='+markers[i].id+' style="display: none;" readonly><label for="sample_rate" id='+'sample_rate_label'+'>Choose sample rate('+markers[i].monada+')</label><br><input id="rangeInput" name="sample_rate" type="range" min='+markers[i].min_st+' max='+markers[i].max_st+' value='+markers[i].sample_rate+' oninput="amount.value=rangeInput.value" /><input id="amount" type="number" value='+ markers[i].sample_rate+' min='+markers[i].min_st+' max='+markers[i].max_st+' oninput="rangeInput.value=amount.value" /><br></div></div><input type="submit" value="Save Changes"></form>')
+              
+               
+               
+              
+                
+                .addTo( map );
+            mark.push(
+              { 
+                pos:position[i],
+                id:ids[i],
+                mark2:mark1
+              }
+            )
+          }
+      }
+ 
  console.log(mark)
   function OpenPopUp(id){
       
