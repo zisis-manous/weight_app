@@ -2,9 +2,11 @@ body{
     
     margin: 0;
     font-family:  sans-serif;
-    background-color: #0c0c3f ;
-    background: url('https://images.pexels.com/photos/10874541/pexels-photo-10874541.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260') no-repeat center center fixed;
-
+    
+    background: url('https://images.pexels.com/photos/10874541/pexels-photo-10874541.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260')  ;
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-color: #000000 ;
    
 }
 

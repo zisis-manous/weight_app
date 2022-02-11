@@ -1,7 +1,11 @@
 body{
-    background-color: #0c0c3f ;
     margin: 0;
     font-family:  sans-serif;
+
+    background: url('https://images.pexels.com/photos/10874585/pexels-photo-10874585.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260')  ;
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-color: #000000 ;
 }
 
 .form{
