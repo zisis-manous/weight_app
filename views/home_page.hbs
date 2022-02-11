@@ -261,6 +261,7 @@ function check_refresh(max_pos,ms){
     console.log(signed)
 
     var locations=[]
+    var zoom_locations=[]
     var latitude=[]
     var lognitude=[]
     var date=[]
@@ -293,6 +294,7 @@ function check_refresh(max_pos,ms){
         latitude.push(parseFloat(la[i].innerText))
         lognitude.push(parseFloat(lo[i].innerText))
         locations.push([parseFloat(lo[i].innerText),parseFloat(la[i].innerText)])
+        zoom_locations.push([parseFloat(la[i].innerText),parseFloat(lo[i].innerText)])
         date.push(da[i].innerText)
         time.push(ti[i].innerText)
         weight.push(we[i].innerText)
@@ -356,10 +358,14 @@ function check_refresh(max_pos,ms){
               center: [20.0, 5.0],
               minZoom: 2,
               zoom: 2
-                }).setView([mean_lat	,mean_long ], 18-latitude.length);
+                })//.setView([mean_lat	,mean_long ], 18-latitude.length);
                   L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
               attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
               subdomains: ['a','b','c']}).addTo( map );
+
+
+              map.fitBounds(zoom_locations)
+
 
               var markers=[]
               for(i=0;i<latitude.length;i++){
