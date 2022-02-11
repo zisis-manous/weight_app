@@ -22,21 +22,36 @@
   
       <link rel="stylesheet" href="/css/device.css" />
       <link rel="stylesheet" href="/css/navigations_bar.css" />
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
- 
-  
+     <!--  
+      <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.min.js"></script>
    
+-->
+    <!-- 
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+-->
+ <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script> 
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.0/Chart.bundle.min.js"></script> 
+      <script type="text/javascript"></script> 
+ <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+ 
  </head>
 
  <h4 class='title'>Device {{device}}</h4> 
 <div class="parent"> 
 
-
+<!--
 <div id="map" class="div_map" >
-    <canvas id="myChart" ></canvas>
+    <canvas id="myChart1" ></canvas>
 </div>
+     -->
      
-
+ <canvas id="myChart" class="div_map" ></canvas>  
     
 <div class="devices">
 <h2 id='scale' style="color: aliceblue;">History</h2>
@@ -67,10 +82,7 @@
     <!--  <td>Date</td>-->
     </tr>
     {{#each id }}
-    <script>
-      console.log('hello')
-      console.log({{lognitude}})
-    </script>
+   
     <tr>
       <!--<a href="/device/{{id}}"target="_self" class="a1" > -->
      
@@ -94,6 +106,25 @@
 </div>
 
 <script>
+  function padTo2Digits(num) {
+  return num.toString().padStart(2, '0');
+}
+
+function formatDate(date) {
+  return (
+    [
+      date.getFullYear(),
+      padTo2Digits(date.getMonth() + 1),
+      padTo2Digits(date.getDate()),
+    ].join('-') +
+    ' ' +
+    [
+      padTo2Digits(date.getHours()),
+      padTo2Digits(date.getMinutes()),
+      padTo2Digits(date.getSeconds()),
+    ].join(':')
+  );
+}
   function change_ref(){
     var opt=document.getElementById('limit')
     var new_lim=opt.options[opt.selectedIndex].value
@@ -129,15 +160,15 @@
   var wei=document.getElementsByClassName("weight");
   var date=document.getElementsByClassName("date-time");
   
-
+  var string1
   var weights=[]
   var dates=[]
   var times=[]
   var xValues=[]
   var yValues=[]
+  var data1=[]
   for(var i=0;i<date.length;i++){
     var a=date[i].innerText;
-    console.log(a)
     var da=new Date(a);
     console.log(da.toLocaleDateString())
     date[i].innerText=da.toLocaleString()
@@ -146,14 +177,17 @@
    
     weights.push(wei[i].innerText)
     yValues.push(parseFloat(wei[i].innerText))
-    xValues.push(da.toLocaleString())
-
+    
+    //string1.slice(0, string1.indexOf(',')) + string1.slice(string1.indexOf(',') + 1, str.length))
+    //xValues.push( string1.slice(0, string1.indexOf(',')) + string1.slice(string1.indexOf(',') + 1, string1.length))
+    xValues.push(da)
+    data1.push([formatDate(da),parseFloat(wei[i].innerText)])
   }
   
  
     
-//var xValues = [50,60,70,80,90,100,110,120,130,140,150];
-///var yValues = [7,8,8,9,9,9,10,11,14,14,15];
+//var xValues = [50,52,70,80,90,102,103,120,130,140,150];
+//var yValues = [7,8,8,9,9,9,10,11,14,14,15];
 
 //var xValues=[new Date('2020-09-30T21:00:00.000Z').toLocaleString(),new Date('2020-09-30T23:00:00.000Z').toLocaleString()]
 //var yValues=[52.3,22.2]
@@ -162,8 +196,121 @@ data={
   xValues,
   yValues
 }
+function newDate(days) {
+  return moment().add(days, 'd');
+}
 
+var config = {
+  type: 'scatter',
+  data: {
+    labels:xValues, //[newDate(-4), newDate(-3), newDate(2), newDate(3), newDate(4), newDate(5), newDate(6)],
+    datasets: [{
+      label: "Weight",
+      data:yValues ,//[1, 3, 4, 2, 1, 4, 2],
+    }]
+  },//*/,
+  options: {
+    scales: {
+      xAxes: [{
+        type: 'time',
+        time: {
+          displayFormats: {
+             'millisecond': 'MMM DD',
+            'second': 'MMM DD',
+            'minute': 'MMM DD',
+            'hour': 'MMM DD',
+            'day': 'MMM DD',
+            'week': 'MMM DD',
+            'month': 'MMM DD',
+            'quarter': 'MMM DD',
+            'year': 'MMM DD',
+          }
+        }
+      }],
+    },
+  }
+};
+var ctx = document.getElementById("myChart").getContext("2d");
+new Chart(ctx, config);
+    
+/*
+Highcharts.chart('container', {
+  chart: {
+    type: 'spline'
+  },
+  title: {
+    text: 'Weights of device'
+  },
+  subtitle: {
+    text: 'Irregular time data in Highcharts JS'
+  },
+  xAxis:[{
+        type: 'time',
+        time: {
+          displayFormats: {
+             'millisecond': 'MMM DD',
+            'second': 'MMM DD',
+            'minute': 'MMM DD',
+            'hour': 'MMM DD',
+            'day': 'MMM DD',
+            'week': 'MMM DD',
+            'month': 'MMM DD',
+            'quarter': 'MMM DD',
+            'year': 'MMM DD',
+          }
+        },
+    title: {
+      text: 'Date'
+    }
+  }],
+  yAxis: {
+    title: {
+      text: 'Weight (kg)'
+    },
+    min: 0
+  },
+  tooltip: {
+    headerFormat: '<b>{series.name}</b><br>',
+    pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+  },
 
+  plotOptions: {
+    series: {
+      marker: {
+        enabled: true
+      }
+    }
+  },
+
+  colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
+
+  // Define the data points. All series have a dummy year
+  // of 1970/71 in order to be compared on the same x axis. Note
+  // that in JavaScript, months start at 0 for January, 1 for February etc.
+  series: [{
+    name: "Scale measurements ",
+    data:data1
+    
+    
+  }],
+  responsive: {
+    rules: [{
+      condition: {
+        maxWidth: 500
+      },
+      chartOptions: {
+        plotOptions: {
+          series: {
+            marker: {
+              radius: 2.5
+            }
+          }
+        }
+      }
+    }]
+  }
+});
+/*
 new Chart("myChart",   {
     type: 'line',
     data: {
@@ -176,16 +323,25 @@ new Chart("myChart",   {
       data: yValues
     }]
   },
-    options: {
-      legend: {display:false},
+   options: {
+      d: {display:false},
         scales: {
             x: {
-                type: 'timeseries',
+                //type: 'timeseries',
+                type: 'time',
+                distribution: 'linear',
+               time: {
+                
+                    displayFormats: {
+                        quarter: 'YYYY-MM-DD HH-mm-ss'
+                       // quarter: 'MMM YYYY'
+                    }
+                }
             }
         }
     }
 });
- 
+ */
 /*{
   type: "line",
   data: {
