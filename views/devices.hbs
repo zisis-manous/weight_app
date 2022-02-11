@@ -31,6 +31,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.js"></script>
      <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 -->
+<!--
  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script> 
       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.0/Chart.bundle.min.js"></script> 
       <script type="text/javascript"></script> 
@@ -38,7 +39,10 @@
 <script src="https://code.highcharts.com/modules/series-label.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
-<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>-->
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
  
  </head>
 
@@ -49,9 +53,12 @@
 <div id="map" class="div_map" >
     <canvas id="myChart1" ></canvas>
 </div>
-     -->
      
- <canvas id="myChart" class="div_map" ></canvas>  
+     
+ <canvas id="myChart" class="div_map" ></canvas>  -->
+ <figure class="highcharts-figure">
+  <div id="container"></div>
+  <p class="highcharts-description">
     
 <div class="devices">
 <h2 id='scale' style="color: aliceblue;">History</h2>
@@ -185,7 +192,7 @@ function formatDate(date) {
     //string1.slice(0, string1.indexOf(',')) + string1.slice(string1.indexOf(',') + 1, str.length))
     //xValues.push( string1.slice(0, string1.indexOf(',')) + string1.slice(string1.indexOf(',') + 1, string1.length))
     xValues.push(da)
-    data1.push([formatDate(da),parseFloat(wei[i].innerText)])
+    data1.push([/*formatDate(da)*/da.valueOf(),parseFloat(wei[i].innerText)])
   }
   
  
@@ -200,19 +207,28 @@ data={
   xValues,
   yValues
 }
+
+var a1=[]
+
+for(i=0;i<data1.length;i++){
+    a1.push(data1[0])
+ }
 function newDate(days) {
   return moment().add(days, 'd');
 }
-
+/*
 var config = {
   type: 'scatter',
   data: {
     labels:xValues, //[newDate(-4), newDate(-3), newDate(2), newDate(3), newDate(4), newDate(5), newDate(6)],
-    datasets: [{
-      label: "Weight",
-      data:yValues ,//[1, 3, 4, 2, 1, 4, 2],
+      datasets: [{
+      fill: false,
+      lineTension: 0,
+      backgroundColor: "rgba(0,0,255,1.0)",
+      borderColor: "rgba(0,0,255,0.1)",
+      data: yValues
     }]
-  },//*/,
+  },
   options: {
     scales: {
       xAxes: [{
@@ -233,11 +249,18 @@ var config = {
       }],
     },
   }
-};
-var ctx = document.getElementById("myChart").getContext("2d");
-new Chart(ctx, config);
+};*/
+//var config=
+//var ctx = document.getElementById("myChart").getContext("2d");
+//new Chart(ctx, config);
+
     
-/*
+//*
+Highcharts.setOptions({
+    time: {
+        timezoneOffset: -2*60
+    }
+});
 Highcharts.chart('container', {
   chart: {
     type: 'spline'
@@ -245,12 +268,37 @@ Highcharts.chart('container', {
   title: {
     text: 'Weights of device'
   },
+  
   subtitle: {
     text: 'Irregular time data in Highcharts JS'
   },
   xAxis:[{
-        type: 'time',
-        time: {
+        //type: 'time',
+        /* labels: {
+        formatter: function() {
+          return Highcharts.dateFormat('%b/%e/%Y', this.value);
+        }
+      },*/
+       type: 'datetime',
+       time:{
+         useUTC:false
+       },
+      
+    
+    labels: {
+        formatter: function() {
+          return Highcharts.dateFormat('%e/%m/%Y<br>%H:%M:%S', this.value);
+        }
+      },
+      /*
+      labels: {
+          //format: '{value:%Y-%b-%e %H:%M}'
+          formatter:()=>{
+            
+            return this.a1
+          }
+      },*/
+       /* time: {
           displayFormats: {
              'millisecond': 'MMM DD',
             'second': 'MMM DD',
@@ -262,7 +310,7 @@ Highcharts.chart('container', {
             'quarter': 'MMM DD',
             'year': 'MMM DD',
           }
-        },
+        },*/
     title: {
       text: 'Date'
     }
@@ -274,8 +322,8 @@ Highcharts.chart('container', {
     min: 0
   },
   tooltip: {
-    headerFormat: '<b>{series.name}</b><br>',
-    pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+    //headerFormat: '<b>{series.name}</b><br>',
+    pointFormat: '{point.x:%e. %b.%Y}: {point.y:.2f} kg'
   },
 
   plotOptions: {
@@ -294,6 +342,7 @@ Highcharts.chart('container', {
   series: [{
     name: "Scale measurements ",
     data:data1
+    
     
     
   }],
