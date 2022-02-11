@@ -169,7 +169,11 @@ function formatDate(date) {
   var data1=[]
   for(var i=0;i<date.length;i++){
     var a=date[i].innerText;
+     var a=a.slice(0,-5)
+    //var da=new Date(a.substring(0,a.length-1));
+    
     var da=new Date(a);
+
     console.log(da.toLocaleDateString())
     date[i].innerText=da.toLocaleString()
 
