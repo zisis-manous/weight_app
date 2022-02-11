@@ -222,10 +222,10 @@ function check_refresh(max_pos,ms){
 
   for(var i=0;i<date1.length;i++){
     var a=date1[i].innerText;
-    
+    var a=a.slice(0,-5)
     //var da=new Date(a.substring(0,a.length-1));
     var da=new Date(a);
-    //date1[i].innerText=da.toLocaleString()
+    date1[i].innerText=da.toLocaleString()
 
 
 
