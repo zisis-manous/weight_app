@@ -46,7 +46,7 @@
  
  </head>
 
- <h4 class='title'>Device {{device}}</h4> 
+
 <div class="parent"> 
 
 <!--
@@ -56,11 +56,17 @@
      
      
  <canvas id="myChart" class="div_map" ></canvas>  -->
- <figure class="highcharts-figure">
-  <div id="container"></div>
-  <p class="highcharts-description">
-    
+ <div id="outer">
+   <div class="graph">
+      <h4 class='title'>Device {{device}}</h4> 
+       <figure class="highcharts-figure">
+        <div id="container"></div>
+        <p class="highcharts-description">
+   </div>
+
+   
 <div class="devices">
+   
 <h2 id='scale' style="color: aliceblue;">History</h2>
 <p>{{lim}}</p>
 
@@ -111,7 +117,7 @@
 </div>
 
 </div>
-
+</div>
 <script>
   function padTo2Digits(num) {
   return num.toString().padStart(2, '0');
