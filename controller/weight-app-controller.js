@@ -83,7 +83,7 @@ exports.getAllWeights=(request,response)=>{
                 devices
             }
         }
-        console.log(a)
+        //console.log(a)
         var data=JSON.parse(JSON.stringify(a))
         response.render('home_page', data);
     })//*/
@@ -114,7 +114,7 @@ exports.getID=(request,response)=>{
             response.send(err);
         }
         //pool.end();
-        //console.log(device)
+        console.log(device)
         device['limit']=limit
         var a
         if(user!=undefined){
@@ -222,7 +222,20 @@ exports.getDevicesData=(request,response)=>{
         if (err) {
             response.send(err);
         }
-        
+        console.log(devices.devices[0])
+        for(var i=0;i<devices.devices.length;i++){
+            if(devices.devices[i].mode=='psm'){
+                devices.devices[i].mode=1
+            }
+            else if(devices.devices[i].mode=='reqular'){
+                devices.devices[i].mode=0
+
+            }
+            else if(devices.devices[i].mode=='press'){
+                devices.devices[i].mode=2
+
+            }
+        }
         //pool1.end();
         //pool1.
         response.send(devices);
