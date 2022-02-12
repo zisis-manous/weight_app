@@ -159,7 +159,7 @@ router.get('/device/:id/more',(req,res)=>{
   res.send('okay')
 })
 //input new collection data
-router.post('/add_weight',deviceController.AddWeight)
+router.post('/add_weight',(request,response)=>{deviceController.AddWeight(io,request,response)})
 //--------------------------
 /*
 router.get('/db',(request,response)=>{

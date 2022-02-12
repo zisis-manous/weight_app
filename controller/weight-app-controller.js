@@ -139,8 +139,9 @@ exports.getID=(request,response)=>{
 
 }
 
-exports.AddWeight=(request,response)=>{
+exports.AddWeight=(io,request,response)=>{
     if(request.body.password=="arduino"){
+        io.emit('change_weight', request.body);
     const pool1 = new Pool({
         connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
         ssl: {

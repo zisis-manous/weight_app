@@ -1,0 +1,89 @@
+----Για ιστοσελίδα---------------------------------------------------------------------------------
+1.Να φτιαξω πολλαπλα στοιχεια json για στοιχεία συσκευής 
+2. Σχεδιασμός της σελίδας ιστορικού συσκευής
+3. Εισαγωγή γραφήματος
+4.Στην αρχική σελίδα στον πίνακα να μπορεί να αλλάζουν τα δεδομένα κατα φθίνουσα/αύξοντα σειρά.
+5.Εισαγωγή σελίδας με όλες τις συσκευές 
+	taskbar με όλες τις συσκευές και δεξιά η σελίδα ιστορικού της συσκευής
+6. οταν παταει πανω στον χαρτη να δειχνει τοplot και τον σενσορα και αμα θελησει αναλυτικα να μπει στην αντιστοιχη σελιδα
+
+Αρχιτεκτονική σελίδας ιστορικού:
+αριστερά θα είναι το γράφημα με ώρα κ' βαρος και δεξιά το ιστορικό 
+και απο κάτω χάρτης?
+#Πως μπορώ να κάνω live ανανέωση δεδομένων χωρις refresh?
+	να φτιαξω get api που επιστρεφει το μεγεθος των μετρησεων
+	αν έχει αλλαξει ,τοτε παιρνω το τελευταίο στοιχείο και το ανανεώνω/προσθετω
+	αναλογα αν ειναι για το home_page ή για την ιστοσελίδα στοιχείων
+
+
+--Για βάση--------------------------------------------------------------------------------
+Θα γίνει χρήση postgress
+1.να κατεβασω postgress στο lenovo
+2.Εισαγωγη postgres sql 
+
+----------------------------------------------------------------------------------------------
+
+sql queries
+
+UPDATE public.device
+set is_on=1
+where device_id=1;
+
+
+select is_on 
+from public.device
+where device_id=0;
+
+
+UPDATE public.device
+set sample_rate=30
+where device_id=0;
+
+όλες οι μετρήσεις
+select public.collection_data.coll_id as pos,is_on, weight,lang,long,date_time,device_name,public.has_weight.device_id1 from public.collection_data,public.has_weight,public.device 
+    where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=public.device.device_id;
+
+για πιο προσφατες μετρήσεις
+
+with q as(
+select public.collection_data.coll_id as pos,is_on,sample_rate, weight,lang,long,date_time,device_name,public.has_weight.device_id1 from public.collection_data,public.has_weight,public.device 
+    where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=public.device.device_id
+	
+)
+select public.collection_data.coll_id as pos,is_on, weight,lang,long,date_time,device_name,public.has_weight.device_id1 from public.collection_data,public.has_weight,public.device 
+    where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=public.device.device_id and coll_id in (select max(q.pos)
+from q
+group by q.device_id1);
+
+
+----διαγραφη
+πρώτα στο has_weight 
+μετα στο collection_data
+with q1 as(
+select coll_id from public.collection_data
+where coll_id not in (select coll_id1 from public.has_weight))
+
+delete from public.collection_data 
+where coll_id in (select *from q1);
+
+
+
+--insert new user
+INSERT INTO users (email,username, password) VALUES (
+  'zisis@gmail.com','zisis',
+  crypt('zisispass', gen_salt('bf'))
+);
+---Arduino-----------------------------------------------------------------------------------
+# αποστολή δεδομένων μέσω mqtt protocol ή http protocol?
+# Δημιουργια node-red για να δείξουμε πως λειτουργεί 
+#χρησιμοποίηση google cloud?
+
+---------------------------------------------------------------------------------------------
+heroku pg:killall --app=weight-app-g2
+heroku logs --tail --app=weight-app-g2
+
+----------------
+
+   "min_st":min_st[i],
+          "max_st":max_sti[i],
+          "div_display":div_display[i]
