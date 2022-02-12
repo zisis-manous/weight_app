@@ -19,6 +19,7 @@ body{
 
 */
 .title{
+    font-size: 35px;
     padding-left: 2%;
     color: antiquewhite;
 }
@@ -121,6 +122,22 @@ td >.a1{
     width: 10px;
     
 }
+.down_btn{
+    position: relative;
+    bottom:2px;
+    right: 1px;
+    width: 50px; 
+    height:50px;
+}
+.dot {
+   
+    height: 45px;
+    width: 45px;
+    display:inline;
+    background-color: aliceblue;
+    border-radius: 50%;
+    
+  }
 .graph{
     position:sticky;
     top:0px;
@@ -129,6 +146,7 @@ td >.a1{
 .title{
     position:sticky;
     top:0px; 
+    display:inline;
     
     
     
@@ -145,6 +163,31 @@ td >.a1{
     margin-bottom: 1rem;
     border-radius: 15px;
     box-shadow: 5px 5px 5px 6px rgba(0, 0, 0, 0.651);
+}
+
+.other_device{
+    position: relative;
+    display: none;
+    left: 50px;
+    top:7px;
+    width: fit-content;
+    background-color: rgb(212, 206, 224); 
+    padding: 2% 2% 2% 2%;
+    border: 2px solid rgb(212, 206, 224); 
+    border-radius: 20px;
+    box-shadow: 5px 5px 5px 6px rgba(0, 0, 0, 0.37);
+    margin-bottom: 1rem;
+}
+.list_devices{
+    position: relative;
+    right: 12px;
+    text-align:center;
+    font-size: 20px;
+    z-index:3 ;
+}
+#list_a{
+    text-decoration: none;
+    color: black;
 }
 /*
 background-color:rgb(54, 21, 145);
