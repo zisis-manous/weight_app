@@ -231,7 +231,7 @@ exports.getDevicesData=(request,response)=>{
                 devices.devices[i].mode=0
 
             }
-            else if(devices.devices[i].mode=='press'){
+            else if(devices.devices[i].mode=='press_mode'){
                 devices.devices[i].mode=2
 
             }
