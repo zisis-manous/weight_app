@@ -2,6 +2,8 @@ body{
     background-color: #0c0c3f ;
     margin: 0;
     font-family:  sans-serif;
+    
+
 }
 
 .div_map{
@@ -150,3 +152,18 @@ td >.a1{
     width: 10px;
     
 }
+
+@keyframes mymove {
+    from {background-color: aliceblue;}
+    50% {background-color: rgb(57, 125, 180)};
+    100% {background-color: aliceblue;}
+    
+
+  }
+  @keyframes mymove2 {
+      
+    from {background-color: rgb(57, 125, 180);
+       }
+    to {background-color: aliceblue}
+  }
+

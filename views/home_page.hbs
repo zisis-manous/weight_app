@@ -515,6 +515,14 @@ function check_refresh(max_pos,ms){
       }
  
  console.log(mark)
+ function change_back_color(dom){
+    for(j=0;j<dom.children.length;j++){
+   // dom.children[j].style.backgroundColor=color
+   dom.children[j].style.animation = "mymove 1s 1";
+    
+  }
+
+ }
 
   function OpenPopUp(id){
       
@@ -568,11 +576,12 @@ function check_refresh(max_pos,ms){
       pop._content='<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+message.weight+' kg<br>'+date_time.toLocaleString()+' '+markers[i].time+'</p>' +'<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe><form action="/change_device_settings" method="post"><label for="change state"  id="device_id">'+markers[i].name+'is '+markers[i].state +'</p><br><label for="change_state">Turn '+markers[i].change_state1+ ' Device</label>'+'<input type="checkbox" id="change_state" name="change_state" onclick="change_options()" value='+markers[i].turn_device+'><br><div id='+'all_options '+markers[i].div_option+'> <label for=press_mode>press mode</label><input  type="radio" id=psm onclick="test2()" name="mode" value="press_mode" '+markers[i].press+'><br><label for=psm>power save mode</label><input  type="radio" id=psm onclick="test()" name="mode" value="psm" '+markers[i].psm+'><br><label for=reqular'+markers[i].id+'>reqular mode</label><input  type="radio" id=reqular'+markers[i].id+' onclick="test1()" name="mode" value="reqular" '+markers[i].reqular+' ><br><div id='+'more_options'+''+markers[i].div_display+'><input   type="text" name="device_id" value='+markers[i].id+' style="display: none;" readonly><label for="sample_rate" id='+'sample_rate_label'+'>Choose sample rate('+markers[i].monada+')</label><br><input id="rangeInput" name="sample_rate" type="range" min='+markers[i].min_st+' max='+markers[i].max_st+' value='+markers[i].sample_rate+' oninput="amount.value=rangeInput.value" /><input id="amount" type="number" value='+ markers[i].sample_rate+' min='+markers[i].min_st+' max='+markers[i].max_st+' oninput="rangeInput.value=amount.value" /><br></div></div><input type="submit" value="Save Changes"></form>'
   }
 
+  change_back_color(b)
+ 
   console.log(message)
   
 
 })
-
 
     </script>
  <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
