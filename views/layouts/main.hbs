@@ -11,20 +11,22 @@
     </head>
     <link rel="stylesheet" href="/css/navigations_bar.css" />
       <link rel = "icon" href = 
-"https://scontent.fath7-1.fna.fbcdn.net/v/t1.15752-9/273558048_342079107813330_1042667849827143624_n.png?_nc_cat=110&ccb=1-5&_nc_sid=ae9488&_nc_ohc=XRYV49XZ2e8AX_mSxIR&_nc_ht=scontent.fath7-1.fna&oh=03_AVLuZ9Mz6HqdS3xivARt5xnfMXbUT3ZLPtnFPkP3H_laJA&oe=62291B2E" 
+                "https://scontent.fath7-1.fna.fbcdn.net/v/t1.15752-9/273558048_342079107813330_1042667849827143624_n.png?_nc_cat=110&ccb=1-5&_nc_sid=ae9488&_nc_ohc=XRYV49XZ2e8AX_mSxIR&_nc_ht=scontent.fath7-1.fna&oh=03_AVLuZ9Mz6HqdS3xivARt5xnfMXbUT3ZLPtnFPkP3H_laJA&oe=62291B2E" 
         type = "image/x-icon">
     <body>
     <div class="topnav">
-      <a class="active" href="/">Home</a>
+      <a class="active" href="/"><img src="https://scontent.fath7-1.fna.fbcdn.net/v/t1.15752-9/273620567_4892835804157420_6154479198172180233_n.png?_nc_cat=111&ccb=1-5&_nc_sid=ae9488&_nc_ohc=smchnnkaKsYAX_X2V8T&_nc_ht=scontent.fath7-1.fna&oh=03_AVL9m_f63KyE4VBYZxX5WGV9mAz-Z2-xqvdH4uf7vd79gg&oe=622D73F0" alt="Home"></a>
       
       <a href="#about">About</a>
       {{#if username}}
-        <a>{{username}}</a>
+        <a id="username">{{username}}</a>
+        <a href="/register">Add new user</a>
         <a href="/logout">logout</a>
          {{else}}
       <a href="/login">Login</a>
-      <a href="/register">Register</a>
+      
        {{/if}}
+    
     </div>
     <br>
     

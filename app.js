@@ -1,5 +1,10 @@
 const express = require('express')
-const app = express()
+//const app = express()
+//socket io
+
+
+
+//end of socket io
 const exphbs = require('express-handlebars');
 const mqtt = require('mqtt')
 
@@ -7,9 +12,16 @@ const host = 'broker.emqx.io'
 const port = '1883'
 const clientId = `mqtt_${Math.random().toString(16).slice(3)}`
 
+
+
+  
 //Διαδρομές - Routse
-const routes = require('./routes/weight-app-routes');
-app.use('/', routes);
+const ROUTES = require('./routes/weight-app-routes');
+const app=ROUTES.app
+const io=ROUTES.io
+const http=ROUTES.http
+app.use('/', ROUTES.routes);
+
 app.use(express.static(__dirname + '/public'));
 
 //Χρήση των views - Using 'views'
@@ -20,5 +32,17 @@ app.engine('hbs', exphbs({
 }));
 
 app.set('view engine', 'hbs');
+/*
+io.on('connection', function(socket){
+    console.log('A user connected');
+    
+    //Whenever someone disconnects this piece of code executed
+    socket.on('disconnect', function () {
+       console.log('A user disconnected');
+    });
+ });*/
+ 
 
-module.exports = app;
+exports.app = app;
+exports.io=io;
+exports.http=http

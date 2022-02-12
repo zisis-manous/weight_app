@@ -1,18 +1,26 @@
 'use strict';
 
 const express = require('express');
+
+const app = express()
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
 const res = require('express/lib/response');
 //const Pool = require('mysql/lib/Pool');
 var mysql = require('mysql');
 const session = require('express-session')
 const { request } = require('../app');
 const router = express.Router();
+
+
 router.use(
   express.urlencoded({
     extended: true
   })
 )
 const passport=require('passport')
+const Chart = require('chart.js');
 
 
 const LocalStrategy = require('passport-local').Strategy
@@ -132,11 +140,17 @@ let printData = (req, res, next) => {
 
 router.use(printData)*/
 
+
+//socket.io
+
+
+
 //δουλευει με arduinoo
 router.post('/handle',(req,res)=>{
   console.log(req.body)
+  io.emit('message', req.body);
 
-  res.redirect('/device/0')
+  res.send(req.body)
 })
 
 router.post('/data_plot',deviceController.DataPlot)
@@ -194,7 +208,21 @@ router.get('/login',(req,res)=>{
   res.render('login')
 })
 router.get('/register',(req,res)=>{
-  res.render('register')
+  var user=req.user
+  var a
+        if(user!=undefined){
+         a={
+            'username':user.name,
+            'id1':user.id
+            
+        }}
+        else{
+            a={
+                
+            }
+        }
+
+  res.render('register',a)
 })
 
 router.post('/login_user',passport.authenticate('local', {
@@ -213,6 +241,8 @@ router.get('/logout',(req,res)=>{
 router.get('/success',(req,res)=>{
   res.send('hello there')
 })
+
+router.get('/name_devices',deviceController.NameDevices)
 /*
 router.get('device/api/scales/:path',(request,response)=>{
     
@@ -266,4 +296,9 @@ router.post('/add_task',(request,response,next)=>{
 })
 //*/
 
-module.exports = router;
+
+
+exports.routes = router;
+exports.io=io;
+exports.app=app
+exports.http=http

@@ -6,6 +6,7 @@ const model = require('../model/postgres-model.js');
 
 var mysql = require('mysql');
 
+const store = require("store2");
 
 const Pool = require("pg").Pool;
 const { reset } = require('nodemon');
@@ -34,6 +35,7 @@ exports.getAllWeights=(request,response)=>{
     console.log('get all weights')
     //console.log(request.user)
     var user=request.user
+    store.setAll({name: 'Adam', age: 34})
     /*const client2=new Client({
         host: "localhost",
         user:"postgres",
@@ -353,7 +355,20 @@ exports.registerUser=(request,response)=>{
 
             }
             else{
-                response.render('register',{email:1})
+                var a
+                    if(user!=undefined){
+                        a={
+                        'username':user.name,
+                        'id1':user.id,
+                        email:1
+                    }}
+                    else{
+                            a={
+                                email:1
+                                }
+                        }
+                
+                response.render('register',a)
             }
 
         })
@@ -420,6 +435,25 @@ exports.signUser=(user,password,callback)=>{
     
 
 
+}
+
+exports.NameDevices=(request,response)=>{
+    console.log(request.body)
+    const pool1 = new Pool({
+        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+    model.NameDevices(pool1,(err,devices_name)=>{
+        if(err){
+            response.send(err)
+
+        }
+        response.send(devices_name)
+
+    })
+    
 }
 /*
 exports.getID=(id,request,response)=>{

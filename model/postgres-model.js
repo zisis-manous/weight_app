@@ -562,3 +562,36 @@ exports.signUser=(pool,user,password,callback)=>{
     })()
 
 }
+
+exports.NameDevices=(pool,callback)=>{
+    var quer=
+    ` select device_name,device_id from public.device;`;
+
+    
+    
+    ;(async function() {
+        const client = await pool.connect()
+        await client.query(quer,(err,res)=>{
+            if(!err){
+            
+           console.log(res.rows)
+           console.log('getting data from postgress')
+            
+            callback(null, res.rows)
+            client.end()
+            
+            }
+            else{
+
+            console.log(err.message);
+            callback(err, null)
+            
+
+            }
+            console.log('hello')
+            })
+        client.release()
+        return
+    })()
+
+}

@@ -119,6 +119,29 @@
 </div>
 </div>
 <script>
+async function name_devices (pos) {
+   fetch('/name_devices')
+      .then( async (response) => {
+
+        // get json response here
+        let data = await response.json();
+        
+        
+        if(response.status === 200){
+         // Process data here
+        }else{
+         // Rest of status codes (400,500,303), can be handled here appropriately
+        }
+        console.log(data)
+        return data
+
+      })
+      .catch((err) => {
+          console.log(err);
+      })
+     
+}
+
   function padTo2Digits(num) {
   return num.toString().padStart(2, '0');
 }

@@ -2,11 +2,12 @@
       <link rel="stylesheet" href="/css/register.css" />
 
 </head>
+{{#if username}}
 <div class="form">
 <form action="/Register_user" method="POST">
  
     <h1>Register</h1>
-    <p>Please fill in this form to create an account.</p>
+    <p>Please fill in this form to create an account for new user.</p>
     <hr>
     {{#if email}}
     <p>There is an account with the email <a href="/login">Sign in</a></p>
@@ -37,6 +38,10 @@
 
 </form>
 </div>
+{{else}}
+<h1 style="color: aliceblue;">You aren't authorized for adding new user<br>if you are admin <a href="/login" style="text-decoration: none;color: inherit; ">Sign in</a> </h1>
+{{/if}}
+
 
 <script>
 
