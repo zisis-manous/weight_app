@@ -17,7 +17,7 @@
           <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>-->
          <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
 
-
+    
 
   
  
@@ -82,7 +82,7 @@
          <td><p class="lognitude" id="long{{device_id1}}">{{long}}</p></td>
          <td><p class="latitude" id="lat{{device_id1}}" >{{lang}} </p></td>
         <td class="date-time" id="date_time{{device_id1}}"> <p class="date" id="date{{device_id1}}">{{date_time}}</p>&nbsp;<p class="time" id="time{{device_id1}}"> {{time}}</p></td>
-        <td><p id="is_on">{{is_on}}</p></td>
+        <td><p class="is_on">{{is_on}}</p></td>
         <td><p class="mode">{{mode}}</p></td>
         <td><p class="sample_rate" id="sample_rate{{device_id1}}">{{sample_rate}}</p></td>
         <td class="test"><a href="/device/{{device_id1}}"target="_self" class="a1" ><p>See history</p></a></td>
@@ -583,19 +583,83 @@ function check_refresh(max_pos,ms){
       
 
 })
-/*
+//*
 socket.on('change_state',(message)=>{
     console.log(message)
-    var tr=document.getElementById('main'+message.device_id)
-    var mode=tr.getElementsByClassName('mode')[0]
-    var sample_rate=tr.getElementsByClassName('sample_rate')[0]
-    var is_on=tr.getElementById('is_on')
-    if(messsage.change_state==0){
-      mode.innerText=message.mode
-      sample_rate=tr.innerText=message.sample_rate
+    var device_id=message.device_id
+    var mode=message.mode
+    var sample_rate=message.sample_rate
+    var change_state;
+    var state
+    var turn_device
+    console.log(device_id)
+    console.log(mode)
+    console.log(sample_rate)
+    var b=document.getElementById(`main${device_id}`)
+    //b.getElementsByClassName('is_on')[0].innerText='a'
+    b.getElementsByClassName('mode')[0].innerText=mode
+    b.getElementsByClassName('sample_rate')[0].innerText=sample_rate
+     var div_option
+          
+    if(message.change_state!=undefined){
+      b.getElementsByClassName('is_on')[0].innerText=message.change_state
+      change_state='on'
+      state='off'
+      turn_device=0
+      div_option=' style="display: none;"'
     }
-    is_on.innerText=message.change_state
-})*/
+    if(message.change_state==undefined){
+      change_state='off'
+      state='on'
+      turn_device=1
+       div_option=''
+    }
+    var monada
+    var min_st
+    var max_st
+    var div_display
+    var reqular
+    var press
+    var psm
+    //      
+       if(mode=='reqular'){
+         monada='seconds'
+         min_st='10'
+         max_st='100'
+         div_display=''
+         reqular='checked=true'
+         press=''
+         psm=''
+       }
+  
+      if(mode=='psm'){
+           monada='hours'
+            min_st='1'
+         max_st='6'
+            div_display=''
+         reqular=''
+         press=''
+         psm='checked=true'
+       }
+      if(mode=='press_mode'){
+         div_display=' style="display: none;"'
+         reqular=''
+         press='checked=true'
+         psm=''
+       }
+
+    //
+    //changing popup
+     var i=find_id(b.getElementsByClassName('pos')[0].id,mark)
+    var pop=mark[i].mark2.getPopup()
+
+    pop._content='<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>' +'<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe><form action="/change_device_settings" method="post"><label for="change state"  id="device_id">'+markers[i].name+'is '+state +'</p><br><label for="change_state">Turn '+change_state+ ' Device</label>'+'<input type="checkbox" id="change_state" name="change_state" onclick="change_options()" value='+turn_device+'><br><div id='+'all_options '+div_option+'> <label for=press_mode>press mode</label><input  type="radio" id=psm onclick="test2()" name="mode" value="press_mode" '+press+'><br><label for=psm>power save mode</label><input  type="radio" id=psm onclick="test()" name="mode" value="psm" '+psm+'><br><label for=reqular'+markers[i].id+'>reqular mode</label><input  type="radio" id=reqular'+markers[i].id+' onclick="test1()" name="mode" value="reqular" '+reqular+' ><br><div id='+'more_options'+''+div_display+'><input   type="text" name="device_id" value='+markers[i].id+' style="display: none;" readonly><label for="sample_rate" id='+'sample_rate_label'+'>Choose sample rate('+sample_rate+')</label><br><input id="rangeInput" name="sample_rate" type="range" min='+min_st+' max='+max_st+' value='+sample_rate+' oninput="amount.value=rangeInput.value" /><input id="amount" type="number" value='+ sample_rate+' min='+min_st+' max='+max_st+' oninput="rangeInput.value=amount.value" /><br></div></div><input type="submit" value="Save Changes"></form>'
+
+
+
+    change_back_color(b)
+
+})//*/
 
     </script>
  <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>

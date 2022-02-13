@@ -19,9 +19,12 @@ router.use(
     extended: true
   })
 )
+
+
 const passport=require('passport')
 const Chart = require('chart.js');
 
+//passport middleware for user sign in
 
 const LocalStrategy = require('passport-local').Strategy
 let authUser = (user, password, done) => {
@@ -68,7 +71,9 @@ passport.deserializeUser((user, done) => {
       done (null, {name: user.username, id: user.userid,admin:user.admin} )      
 
 }) 
+//-------------
 
+// insert cookies
 router.use(session({
   secret: "secret",
   resave: false ,
@@ -76,7 +81,7 @@ router.use(session({
 }))
 router.use(passport.initialize());
 router.use(passport.session())
-
+//---------
 
 const bodyParser = require('body-parser');
 router.use(express.json());
@@ -103,110 +108,50 @@ const pool = new Pool({
 });
 
 
-/*new Client({
-  host: "localhost",
-  user:"postgres",
-  port:5432,
-  password:"3c3aedff0a",
-  database: "scale_devices"
 
-})*/
 
 let count = 1
-/*
-let printData = (req, res, next) => {
-    console.log("\n==============================")
-    console.log(`------------>  ${count++}`)
 
-    console.log(`req.body.username -------> ${req.body.username}`) 
-    console.log(`req.body.password -------> ${req.body.password}`)
-
-    console.log(`\n req.session.passport -------> `)
-    console.log(req.session.passport)
-  
-    console.log(`\n req.user -------> `) 
-    console.log(req.user) 
-  
-    console.log("\n Session and Cookie")
-    console.log(`req.session.id -------> ${req.session.id}`) 
-    console.log(`req.session.cookie -------> `) 
-    console.log(req.session.cookie) 
-  
-    console.log("===========================================\n")
-   
-    console.log(req.user)
-    next()
-}
-
-router.use(printData)*/
 
 
 //socket.io
 
+//APPLICATION'S ROUTES 
 
+//get requests------------------------------------
 
-//δουλευει με arduinoo
-router.post('/handle',(req,res)=>{
-  console.log(req.body)
-  //io.emit('message', req.body);
-
-  res.send(req.body)
-})
-
-router.post('/data_plot',deviceController.DataPlot)
-router.get('/device/:id/more',(req,res)=>{
-  console.log(req)
-  res.send('okay')
-})
-//input new collection data
-router.post('/add_weight',(request,response)=>{deviceController.AddWeight(io,request,response)})
-//--------------------------
-/*
-router.get('/db',(request,response)=>{
-  //response.send('hello there')
-  pool.connect();
-  
-  pool.query("select * from public.device",(err,res)=>{
-    if(!err){
-      console.log(res.rows)
-      response.json(res.rows)
-    }
-    else{
-      console.log(err.message);
-      response.json(err.message)
-    }
+  //1 
+  router.get('/device/:id/more',(req,res)=>{
+    //console.log(req)
+    res.send('okay')
   })
-})*/
 
-router.post('/change_device_settings',deviceController.Change_Device_Setting)
-
-//check device state(if its operational ,sample rate and mode)
+  //2 check device state(if its operational ,sample rate and mode)
 router.get('/device/state/:id',deviceController.seeConnectivity)
-//close or open the device
-router.post('/device/:id/change_state',deviceController.ChangeDeviceState)
-//getting all the weights for homepage
-router.get('/weights', deviceController.getAllWeights);
-//getting all the weights for homepage
-router.get('/', deviceController.getAllWeights);
-//add routes for 
-//removing a task: /tasks/remove/:removeTaskId
-//adding a new task
-//toggling a task
-//router.get(`/weights/${id}`,taskListController.getID(id));
 
-//creating the page of the device history
+  //3 getting all the weights for homepage
+router.get('/weights', deviceController.getAllWeights);
+
+  //4 getting all the weights for homepage
+router.get('/', deviceController.getAllWeights);
+
+  //5 creating the page of the device history
 router.get('/device/:device_id', deviceController.getID);
 
-//get state and sample rate  and mode for all the devices
+  //6 get state and sample rate  and mode for all the devices
 router.get('/devices_data',deviceController.getDevicesData)
-
+  //7 Get device data for certain limit
 router.get('/device/:id/limit/:lim',deviceController.DataPlot)
 
+  //8
 router.get('/refresh_homepage',deviceController.RefreshHomepage)
 
+  //9 get login page
 router.get('/login',(req,res)=>{
   res.render('login')
 })
+
+  //10 get register page
 router.get('/register',(req,res)=>{
   var user=req.user
   var a
@@ -230,79 +175,106 @@ router.get('/register',(req,res)=>{
   res.render('register',a)
 })
 
+  //11 log out user
+router.get('/logout',(req,res)=>{
+  req.logOut()
+  res.redirect('/login')
+})
+  //12
+router.get('/success',(req,res)=>{
+  res.send('hello there')
+})
+
+//13 get request with json for device's name
+router.get('/name_devices',deviceController.NameDevices)
+//14 get request with json device history weight without limt
+router.get('/device_weight/:device_id',deviceController.JsonDeviceWeight)
+//15 return json with history weight for limit
+router.get('/device_weight/:device_id/limit/:limit',deviceController.JsonDeviceWeightLimit)
+
+
+/
+
+
+//post requests--------------------------------
+  // 1 δουλευει με arduinoo
+router.post('/handle',(req,res)=>{
+  console.log(req.body)
+  //io.emit('message', req.body);
+
+  res.send(req.body)
+})
+
+  //2
+router.post('/data_plot',deviceController.DataPlot)
+
+  //3 input new collection data
+router.post('/add_weight',(request,response)=>{deviceController.AddWeight(io,request,response)})
+//--------------------------
+
+  //4 
+router.post('/change_device_settings',(request,response)=>{deviceController.Change_Device_Setting(io,request,response)})
+
+router.post('/change_device_settings2',(request,response)=>{deviceController.Change_Device_Setting2(io,request,response)})
+  //5 close or open the device
+router.post('/device/:id/change_state',deviceController.ChangeDeviceState)
+
+  //6 post request to login user
 router.post('/login_user',passport.authenticate('local', {
   
   successRedirect: "/",
   failureRedirect: "/login",
 }))
 
-
+  //7 post request for adding new user
 router.post('/register_user',deviceController.registerUser)
 
-router.get('/logout',(req,res)=>{
-  req.logOut()
-  res.redirect('/login')
-})
-router.get('/success',(req,res)=>{
-  res.send('hello there')
-})
 
-router.get('/name_devices',deviceController.NameDevices)
-//router.get('/test1',deviceController.CheckAdmin)
-/*
-router.get('device/api/scales/:path',(request,response)=>{
-    
 
-})
-router.post('/weight',(request,response,next)=>{
-    var h=request.body;
-    console.log(h.id);
-    response.redirect(`/weights/${h.id}`)
+//--------------------
+//mqtt -----
+const mqtt = require('mqtt')
+const host = process.env.MQTT_HOST
+const port = process.env.MQTT_PORT
+const clientId = `mqtt_${Math.random().toString(16).slice(3)}`
+const connectUrl = `mqtt://${host}:${port}`
 
-})
-router.get('/kristi_test/:path',(req,res)=>{
-  console.log(req.params.path)
-  res.send('success you did a get request')
-})
-router.put('/add_weight1/:path',(req,res)=>{
-  console.log(req.params.path)
-  data=JSON.parse(req.params.path)
-  console.log(data)
-  res.send('ok')
-
-})
-
-router.post('/add_weight/:path', (req, res) => {
-    console.log(req.params.path)
-    console.log(req.params.path.hello)
-    res.send('success boii ')
+function mqtt_connect(){
+  const client = mqtt.connect(connectUrl, {
+    clientId,
+    clean: true,
+    connectTimeout: 4000,
+    username: process.env.MQTT_USERNAME,
+    password: process.env.MQTT_PASS,
+    reconnectPeriod: 1000,
   })
+  
+  client.on('connect', () => {
+    console.log('Connected')
+    client.subscribe([topic], () => {
+      console.log(`Subscribe to topic '${topic}'`)
+    })
+  })
+  return client
+}
 
-router.get('/input_weight/:path',deviceController.giveInputWeight)
-*/
 
+//--------------------
+router.get('/mqtt_test',(req,res)=>{
+  const topic = 'add_weight/1'
+
+//var client=mqtt_connect()
+//console.log(client)
 /*
-router.post('/delete_task',(request,response,next)=>{
-    var h=request.body;
-    console.log(h);
-    response.redirect('/tasks');
+client.on('message', (topic, payload) => {
+  console.log('Received Message:', topic, payload.toString())
+  
+})*/
+res.send('hello there')
+
+
 })
-
-
-router.post('/change_status',(request,response,next)=>{
-    var h=request.body;
-    console.log(h);
-    response.redirect('/tasks');
-})
-
-router.post('/add_task',(request,response,next)=>{
-    var h=request.body;
-    console.log(h.id);
-    response.redirect('/tasks');
-})
-//*/
-
-
+//----------------
 
 exports.routes = router;
 exports.io=io;

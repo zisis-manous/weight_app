@@ -3,7 +3,7 @@ body{
     margin: 0;
     font-family:  sans-serif;
 }
-
+/*
 .div_map{
     border: 4px solid rgb(212, 206, 224); 
     background-color: rgb(212, 206, 224); 
@@ -14,10 +14,25 @@ body{
     margin-bottom: 1rem;
     margin-right: 1rem;
     
+}*/
+
+
+.div_map{
+    width: 500px;
+     height: 300px; 
+    border: 4px solid rgb(212, 206, 224); 
+    border-radius: 20px;
+    padding: 0.5% 0.5% 0.5% 0.5%;
+    box-shadow: 5px 5px 5px 6px rgba(0, 0, 0, 0.37);
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    
 }
 /*
 
 */
+
+
 .title{
     font-size: 35px;
     padding-left: 2%;
@@ -27,15 +42,41 @@ body{
     padding-left: 2%;
     
 }
+@media screen and (min-width: 900px){
+    .div_map{
+        width: 900px;
+         height: 600px; 
+        border: 4px solid rgb(212, 206, 224); 
+        border-radius: 20px;
+        padding: 0.5% 0.5% 0.5% 0.5%;
+        box-shadow: 5px 5px 5px 6px rgba(0, 0, 0, 0.37);
+        margin-bottom: 1rem;
+        margin-right: 1rem;
+        
+    }
+}
 
 @media screen and (min-width: 1500px){
-    .parent{
+    
+    #outer{
         display: grid;
-      grid-template-columns:  0.8fr 1fr
+      grid-template-columns:  0.8fr 1fr;
+     
+      
     }
+    .graph{
+        grid-column: 1;
+        grid-row: 1;
 
+    }
+    .devices{
+        grid-column:2 ;
+        grid-row: 1;
+    }
+   
 
 }
+
 .map {
     height:200px;
     width: 500px;
@@ -54,6 +95,8 @@ body{
     margin-bottom: 1rem;
     height: fit-content;
 }
+
+
 
 li{
     overflow:hidden;
@@ -140,6 +183,17 @@ td >.a1{
     border-radius: 50%;
     
   }
+  .dot1 {
+    
+    height: 45px;
+    width: 45px;
+    display:inline;
+    position: relative;
+    left: 10px;
+    background-color: aliceblue;
+    border-radius: 50%;
+    
+  }
 .graph{
     position:sticky;
     top:0px;
@@ -168,10 +222,10 @@ td >.a1{
 }
 
 .other_device{
-    position: relative;
+    position: absolute;
+    z-index: 4;
     display: none;
-    left: 50px;
-    top:7px;
+    
     width: fit-content;
     background-color: rgb(212, 206, 224); 
     padding: 2% 2% 2% 2%;
@@ -200,3 +254,43 @@ border-radius: 20px;
 box-shadow: 5px 5px 5px 6px rgba(0, 0, 0, 0.37);
 margin-bottom: 1rem;
 height: fit-content;*/
+
+.settings{
+    position: absolute;
+    z-index: 5;
+    background-color: #14148d ;
+    width:fit-content;
+    font-size:x-large;
+    border: 2px solid rgb(35, 35, 36); 
+    color: aliceblue; 
+    border-radius: 15px;
+    padding: 10px 10px 10px 10px;
+    box-shadow:5px 5px 5px rgba(32, 32, 32, 0.678);
+}
+#device_id{
+    border-bottom:1px solid rgba(133, 133, 134, 0.726);  ;
+}
+.btn {
+    background:aliceblue; 
+    
+    color: rgb(53, 53, 53);
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    box-shadow:2px 2px 5px rgba(14, 14, 14, 0.678);
+  }
+  .btn:hover {
+    opacity: 0.8;
+  }
+
+  .down_btn1{
+    background:aliceblue; 
+    position: relative;
+    bottom:2px;
+    right:7px;
+    width: 42px; 
+    height:42px;
+    border-radius:100%
+  }

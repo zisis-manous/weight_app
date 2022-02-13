@@ -58,7 +58,42 @@
  <canvas id="myChart" class="div_map" ></canvas>  -->
  <div id="outer">
    <div class="graph">
-     <div style="display: flex;"> <h4 class='title' style="display:none;"id='{{device}}'>{{device}}</h4><button class="dot" onclick="more_options()"id="dbutton"><img  src="https://image.flaticon.com/icons/png/512/57/57085.png" class="down_btn"></div></button>
+     <div style="display: flex;"> <h4 class='title' style="display:none;"id='{{device}}'>{{device}}</h4>
+      <div>
+            <button class="dot" onclick="more_options()"id="dbutton"><img  src="https://image.flaticon.com/icons/png/512/57/57085.png" class="down_btn"></button>
+            {{#if username}}
+             <button class="dot1" onclick="open_settings()"id="dbutton1"><img  src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Windows_Settings_app_icon.png/768px-Windows_Settings_app_icon.png" class="down_btn1"></button>
+            
+
+                  
+<div class="settings" style="display: none;">
+  <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+  
+  <form action="/change_device_settings2" method="post" >
+  <label for="change state" id="device_id">scale_0&nbsp;is on</label>
+  
+    <br><label for="change_state" id="change_state1">Turn off Device</label>
+  <input type="checkbox" id="change_state" name="change_state" onclick="change_options()" value="0"><br>
+  <div id="all_options"> 
+    <label for="press_mode">press mode</label>
+    <input type="radio" id="psm" onclick="test2()" name="mode" value="press_mode"><br>
+    <label for="psm">power save mode</label>
+    <input type="radio" id="psm1" onclick="test()" name="mode" value="psm"><br>
+    <label for="reqular0">reqular mode</label>
+    <input type="radio" id="reqular0" onclick="test1()" name="mode" value="reqular" style="outline: none;"><br>
+    <div id="more_options" style="display: block;"><input type="text" name="device_id" value="0" style="display: none;" readonly="">
+    <label for="sample_rate" id="sample_rate_label">Choose sample rate(seconds)</label><br>
+    
+    <input id="rangeInput" name="sample_rate" type="range" min="30" max="60" value="43" oninput="amount.value=rangeInput.value">
+    <input id="amount" type="number" value="43" min="30" max="60" oninput="rangeInput.value=amount.value"><br></div></div>
+    <input type="submit" value="Save Changes" class="btn"></form>
+  
+
+</div>
+
+{{/if}}
+        </div>
+     </div>
      <div class="other_device">
        <ul class="list_devices">
         
@@ -124,10 +159,15 @@
 </div>
 
 </div>
+
 </div>
+
+
+
+
 <script>
   const socket = io();
-async function name_devices () {
+ async function name_devices () {
    fetch('/name_devices')
       .then( async (response) => {
 
@@ -169,7 +209,185 @@ async function name_devices () {
       })
      
 }
-name_devices()
+
+async function device_settings () {
+  var device_id1=document.getElementsByClassName('title')[0].id
+  
+  console.log(name)
+  var string1='/device/state/'+String(device_id1)
+   fetch(string1)
+      .then( async (response) => {
+
+        // get json response here
+        let data = await response.json();
+        
+        
+        if(response.status === 200){
+         // Process data here
+        }else{
+         // Rest of status codes (400,500,303), can be handled here appropriately
+        }
+
+       console.log(data.mode)
+  var current_state=document.getElementById('device_id')
+  var is_on
+  
+  console.log('chec')
+         
+        console.log(data.device[0])
+        data=data.device[0]
+        var device_name=document.getElementsByClassName('title')[0].innerText
+      
+        var is_on
+        var change_is
+        var state_value
+        var t1=document.getElementById('all_options')
+        console.log(t1.style.display)
+        
+        
+        if(data.is_on==1){
+          is_on='on'
+          change_is='off'
+          state_value=0
+          t1.style.display='block'
+
+        }
+        else if(data.is_on==0){
+          is_on='off'
+          change_is='on'
+          state_value=1
+          t1.style.display='none'
+        }
+    
+        var label_state=document.getElementById('device_id')
+        label_state.innerText=data.device_name +' is ' +is_on
+        document.getElementById('change_state1').innerText=' Turn '+change_is+' Device'
+
+        var checkbox=document.getElementById('change_state')
+        
+
+        var in_pressmode=document.getElementById('psm')
+        var in_psm=document.getElementById('psm1')
+        var in_reqular=document.getElementById('reqular0')
+        var more_options=document.getElementById('more_options')
+        if(data.mode=='press_mode'){
+          in_pressmode.checked=true
+
+          in_reqular=false
+          in_psm.checked=false
+          var r1=document.getElementById('more_options')
+          r1.style.display='none'
+        }
+        if(data.mode=='psm'){
+          more_options.style.display='block'
+          in_pressmode=false
+          in_reqular=false
+          in_psm.checked=true
+          document.getElementById('sample_rate_label').innerText='Choose sample rate(hours)'
+          document.getElementById('amount').value=data.sample_rate
+          document.getElementById('amount').min=1
+          document.getElementById('amount').max=6
+        }
+        if(data.mode=='reqular'){
+          in_reqular.checked=true
+
+          in_pressmode=false
+          
+          in_psm.checked=false
+          more_options.style.display='block'
+
+          document.getElementById('sample_rate_label').innerText='Choose sample rate(seconds)'
+          document.getElementById('amount').value=data.sample_rate
+            document.getElementById('amount').min=15
+          document.getElementById('amount').max=100
+       }
+
+
+        /*
+        console.log('chec')
+         data=data.device[0]
+        console.log(data)
+        var is_on
+        var change_is
+        var state_value
+        if(data.is_on==1){
+          is_on='on'
+          change_is='off'
+          state_value=0
+          
+        }
+        else{
+        is_on='off'
+        change_is='on'
+        state_value=1
+        
+        var r1=change_state
+            var t1=document.getElementById('all_options')
+            console.log(r1.checked)
+            if(t1.style.display=='none'){
+              t1.style.display='block'
+            }
+            else{
+              t1.style.display='none'
+            }
+        
+
+        }
+        var label_state=document.getElementById('device_id')
+        label_state.innerText=data.device_name +' is ' +is_on
+        document.getElementById('change_state1').innerText=' Turn '+change_is+' Device'
+
+        var checkbox=document.getElementById('change_state')
+        
+
+        var in_pressmode=document.getElementById('psm')
+        var in_psm=document.getElementById('psm1')
+        var in_reqular=document.getElementById('reqular0')
+
+        if(data.mode='press_mode'){
+          in_pressmode.checked=true
+          var r1=document.getElementById('more_options')
+          r1.style.display='none'
+        }
+        if(data.mode=='psm'){
+          in_psm.checked=true
+          document.getElementById('sample_rate_label').innerText='Choose sample rate(hours)'
+          document.getElementById('amount').value=data.sample_rate
+          document.getElementById('amount').min=1
+          document.getElementById('amount').max=6
+        }
+        if(data.mode=='reqular'){
+          in_reqular.checked=true
+          document.getElementById('sample_rate_label').innerText='Choose sample rate(seconds)'
+          document.getElementById('amount').value=data.sample_rate
+            document.getElementById('amount').min=15
+          document.getElementById('amount').max=100
+       }
+
+        */
+      //document.getElementsByClassName('settings')[0].style.display='block'
+        
+        
+
+      })
+      .catch((err) => {
+          console.log(err);
+      })
+     
+}
+ name_devices()
+device_settings()
+
+
+function open_settings(){
+  if(document.getElementsByClassName('settings')[0].style.display=='block'){
+    document.getElementsByClassName('settings')[0].style.display='none'
+  }
+  else if(document.getElementsByClassName('settings')[0].style.display=='none'){
+    document.getElementsByClassName('settings')[0].style.display='block'
+  }
+  
+}
 
   function more_options(){
     console.log('ww')
@@ -291,46 +509,7 @@ for(i=0;i<data1.length;i++){
 function newDate(days) {
   return moment().add(days, 'd');
 }
-/*
-var config = {
-  type: 'scatter',
-  data: {
-    labels:xValues, //[newDate(-4), newDate(-3), newDate(2), newDate(3), newDate(4), newDate(5), newDate(6)],
-      datasets: [{
-      fill: false,
-      lineTension: 0,
-      backgroundColor: "rgba(0,0,255,1.0)",
-      borderColor: "rgba(0,0,255,0.1)",
-      data: yValues
-    }]
-  },
-  options: {
-    scales: {
-      xAxes: [{
-        type: 'time',
-        time: {
-          displayFormats: {
-             'millisecond': 'MMM DD',
-            'second': 'MMM DD',
-            'minute': 'MMM DD',
-            'hour': 'MMM DD',
-            'day': 'MMM DD',
-            'week': 'MMM DD',
-            'month': 'MMM DD',
-            'quarter': 'MMM DD',
-            'year': 'MMM DD',
-          }
-        }
-      }],
-    },
-  }
-};*/
-//var config=
-//var ctx = document.getElementById("myChart").getContext("2d");
-//new Chart(ctx, config);
 
-    
-//*
 Highcharts.setOptions({
     time: {
         timezoneOffset: -2*60
@@ -348,12 +527,7 @@ var chart=new Highcharts.chart('container', {
     text: 'Irregular time data in Highcharts JS'
   },
   xAxis:[{
-        //type: 'time',
-        /* labels: {
-        formatter: function() {
-          return Highcharts.dateFormat('%b/%e/%Y', this.value);
-        }
-      },*/
+  
        type: 'datetime',
        time:{
          useUTC:false
@@ -365,27 +539,7 @@ var chart=new Highcharts.chart('container', {
           return Highcharts.dateFormat('%e/%m/%Y<br>%H:%M:%S', this.value);
         }
       },
-      /*
-      labels: {
-          //format: '{value:%Y-%b-%e %H:%M}'
-          formatter:()=>{
-            
-            return this.a1
-          }
-      },*/
-       /* time: {
-          displayFormats: {
-             'millisecond': 'MMM DD',
-            'second': 'MMM DD',
-            'minute': 'MMM DD',
-            'hour': 'MMM DD',
-            'day': 'MMM DD',
-            'week': 'MMM DD',
-            'month': 'MMM DD',
-            'quarter': 'MMM DD',
-            'year': 'MMM DD',
-          }
-        },*/
+
     title: {
       text: 'Date'
     }
@@ -478,58 +632,147 @@ var chart=new Highcharts.chart('container', {
    })
 
 
-/*
-new Chart("myChart",   {
-    type: 'line',
-    data: {
-    labels: xValues,
-    datasets: [{
-      fill: false,
-      lineTension: 0,
-      backgroundColor: "rgba(0,0,255,1.0)",
-      borderColor: "rgba(0,0,255,0.1)",
-      data: yValues
-    }]
-  },
-   options: {
-      d: {display:false},
-        scales: {
-            x: {
-                //type: 'timeseries',
-                type: 'time',
-                distribution: 'linear',
-               time: {
-                
-                    displayFormats: {
-                        quarter: 'YYYY-MM-DD HH-mm-ss'
-                       // quarter: 'MMM YYYY'
-                    }
-                }
+
+
+
+function test(){
+              console.log('hello there')
+              var r1=document.getElementById('more_options')
+              r1.style.display='block'
+              var t=rangeInput
+              var t1=amount
+              var r=document.getElementById('sample_rate_label')
+              r.innerText=''
+              r.innerText='Choose sample rate(hours)'
+              
+              t.min='1'
+              t1.min='1'
+              t.value='1'
+              t1.value='1'
+              t.max='6'
+              t1.max='6'
+          }
+          function test1(){
+              console.log('hello there')
+              var r1=document.getElementById('more_options')
+              r1.style.display='block'
+              var r=document.getElementById('sample_rate_label')
+              r.innerText=''
+              r.innerText='Choose sample rate(seconds)'
+              var t=rangeInput
+              var t1=amount
+              
+              t.min='30'
+              t1.min='30'
+              t.value='30'
+              t1.value='30'
+              t.max='60'
+              t1.max='60'
+          }
+          function test2(){
+              console.log('hello there')
+              var r1=document.getElementById('more_options')
+              r1.style.display='none'
+            
+          }
+          function change_options(){
+            var r1=change_state
+            var t1=document.getElementById('all_options')
+            console.log(r1.checked)
+            if(t1.style.display=='none'){
+              t1.style.display='block'
             }
+            else{
+              t1.style.display='none'
+            }
+          }
+
+var id=document.getElementsByClassName('title')[0].id
+var sock='new_state'+id
+socket.on(sock,(data)=>{
+  
+  console.log(data.mode)
+  var current_state=document.getElementById('device_id')
+  var is_on
+  
+  console.log('chec')
+         
+        console.log(data)
+        var device_name=document.getElementsByClassName('title')[0].innerText
+        if(current_state==`${device_name} is on`){
+          is_on=1
         }
-    }
-});
- */
-/*{
-  type: "line",
-  data: {
-    labels: xValues,
-    datasets: [{
-      fill: false,
-      lineTension: 0,
-      backgroundColor: "rgba(0,0,255,1.0)",
-      borderColor: "rgba(0,0,255,0.1)",
-      data: yValues
-    }]
-  },
-  options: {
-    legend: {display: false},
-    scales: {
-      yAxes: [{ticks: {min: 6, max:16}}],
-    }
-  }
-}
-);//*/
+        else if(current_state==`${device_name} is off`){
+          is_on=1
+        }
+        var is_on
+        var change_is
+        var state_value
+        var t1=document.getElementById('all_options')
+        console.log(t1.style.display)
+        
+        
+        if(data.change_state==undefined ||data.change_state=='1'){
+          is_on='on'
+          change_is='off'
+          state_value=0
+          t1.style.display='block'
+
+        }
+        else if(data.change_state=='0'){
+          is_on='off'
+          change_is='on'
+          state_value=1
+          t1.style.display='none'
+        }
+    
+        var label_state=document.getElementById('device_id')
+        label_state.innerText=device_name +' is ' +is_on
+        document.getElementById('change_state1').innerText=' Turn '+change_is+' Device'
+
+        var checkbox=document.getElementById('change_state')
+        
+
+        var in_pressmode=document.getElementById('psm')
+        var in_psm=document.getElementById('psm1')
+        var in_reqular=document.getElementById('reqular0')
+        var more_options=document.getElementById('more_options')
+        if(data.mode=='press_mode'){
+          in_pressmode.checked=true
+
+          in_reqular=false
+          in_psm.checked=false
+          var r1=document.getElementById('more_options')
+          r1.style.display='none'
+        }
+        if(data.mode=='psm'){
+          more_options.style.display='block'
+          in_pressmode=false
+          in_reqular=false
+          in_psm.checked=true
+          document.getElementById('sample_rate_label').innerText='Choose sample rate(hours)'
+          document.getElementById('amount').value=data.sample_rate
+          document.getElementById('amount').min=1
+          document.getElementById('amount').max=6
+        }
+        if(data.mode=='reqular'){
+          in_reqular.checked=true
+
+          in_pressmode=false
+          
+          in_psm.checked=false
+          more_options.style.display='block'
+
+          document.getElementById('sample_rate_label').innerText='Choose sample rate(seconds)'
+          document.getElementById('amount').value=data.sample_rate
+            document.getElementById('amount').min=15
+          document.getElementById('amount').max=100
+       }
+
+
+})
+
+
 
 
 </script>

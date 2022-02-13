@@ -271,7 +271,7 @@ exports.getDevicesData=(request,response)=>{
     })//*/
 }
 
-exports.Change_Device_Setting =(req,res)=>{
+exports.Change_Device_Setting =(io,req,res)=>{
     var sample_rate2
     const pool1 = new Pool({
         connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
@@ -280,6 +280,7 @@ exports.Change_Device_Setting =(req,res)=>{
         },
     });
     var change_state
+    //console.log(req.body)
     if(req.body.mode=="press_mode"){
         req.body.sample_rate=0
     }
@@ -289,6 +290,12 @@ exports.Change_Device_Setting =(req,res)=>{
     else{
         change_state='hello'
     }
+    console.log('he')
+    console.log(req.body)
+    io.emit('change_state', req.body);
+        var string1='new_state'+req.body.device_id
+        console.log('STRING1-->'+string1)
+        io.emit(string1,req.body)
     model.ChangeDeviceSettings(req.body.device_id,req.body.sample_rate,change_state,req.body.mode,pool1,(err,message)=>{
         if (err) {
             res.send(err);
@@ -297,6 +304,46 @@ exports.Change_Device_Setting =(req,res)=>{
         //pool1.end();
         //pool1.
         res.redirect('/')
+
+    })
+    
+    
+    
+  }
+
+exports.Change_Device_Setting2 =(io,req,res)=>{
+    var sample_rate2
+    const pool1 = new Pool({
+        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+    var change_state
+    console.log(req.body)
+    if(req.body.mode=="press_mode"){
+        req.body.sample_rate=0
+    }
+    if(req.body.change_state!=undefined){
+        change_state=req.body.change_state
+    }
+    else{
+        change_state='hello'
+    }
+    console.log('he')
+    console.log(req.body)
+    io.emit('change_state', req.body);
+        var string1='new_state'+req.body.device_id
+        console.log('STRING1-->'+string1)
+        io.emit(string1,req.body)
+    model.ChangeDeviceSettings(req.body.device_id,req.body.sample_rate,change_state,req.body.mode,pool1,(err,message)=>{
+        if (err) {
+            res.send(err);
+        }
+        
+        //pool1.end();
+        //pool1.
+        res.redirect(`/device/${req.body.device_id}`)
 
     })
     
@@ -523,6 +570,59 @@ exports.CheckAdmin=(request,response)=>{
     })
     
 }
+
+exports.JsonDeviceWeight=(request,response)=>{
+    const pool = new Pool({
+        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+        });
+         var limit
+         limit=10
+        
+         //var user=request.user
+         
+        console.log(request.params.device_id)
+        model.JsonDeviceData(request.params.device_id,pool,(err,device)=>{
+            if (err) {
+                response.send(err);
+            }
+            
+           
+            
+            response.send(device)
+        })
+       
+    
+
+}
+
+exports.JsonDeviceWeightLimit=(request,response)=>{
+    const pool = new Pool({
+        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+        });
+         var limit
+         limit=10
+        
+         //var user=request.user
+         
+        console.log(request.params.device_id)
+        model.JsonDeviceDataLimit(request.params.device_id,request.params.limit,pool,(err,device)=>{
+            if (err) {
+                response.send(err);
+            }
+           
+           
+            
+            response.send(device)
+        })
+
+    
+}
 /*
 exports.getID=(id,request,response)=>{
     console.log(`get all weights for ${id}`)
@@ -544,6 +644,3 @@ exports.getID=(id,request,response)=>{
     
 }
 */
-//add more controller functions, to be called when a user requests a specific
-//route. each function will call the 'model', perform whatever calculations are
-//necessary, and send the response to the client

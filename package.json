@@ -28,7 +28,7 @@
     "express-session": "^1.17.2",
     "http": "0.0.1-security",
     "lockfile": "^1.0.4",
-    "mqtt": "^4.2.8",
+    "mqtt": "^4.3.5",
     "mysql": "^2.18.1",
     "node-localstorage": "^2.2.1",
     "node-red-contrib-coap": "^0.6.0",

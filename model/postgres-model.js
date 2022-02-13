@@ -287,7 +287,7 @@ exports.seeConnectivity=function(id,pool,callback){
         weight, lang, "long", date-time)
         VALUES (${data.weight}, ${data.lang}, ${data.long}, ${data.date_time}');`*/
     
-    const quer1=` select device_id,is_on,sample_rate,mode from public.device where device_id=${id};`
+    const quer1=` select device_name,device_id,is_on,sample_rate,mode from public.device where device_id=${id};`
     //console.log(data)
     
     //*
@@ -608,6 +608,129 @@ exports.check_admin=(pool,id,callback)=>{
            console.log('getting data from postgress')
             
             callback(null, res.rows)
+            client.end()
+            
+            }
+            else{
+
+            console.log(err.message);
+            callback(err, null)
+            
+
+            }
+            console.log('hello')
+            })
+        client.release()
+        return
+    })()
+
+}
+
+exports.JsonDeviceData=(ID,pool,callback)=>{
+    var d1=ID
+    
+    console.log(`d1 is ${d1}`)
+    /*var data={
+        device:d1,
+        id:[
+        {"weight":2.54,"lognitude":21.708996,"latitude":41.771312,"time":"12:23","date":"12/11/2021"},
+        {"weight":32.0,"lognitude":21.747221,"latitude":38.236225,"time":"15:23","date":"12/11/2021"}
+        
+    ]
+    }
+    var device=JSON.parse(JSON.stringify(data))*/
+   
+    //* 
+
+    var quer1=`with row_count as (
+        select COUNT(*) as row1 from public.collection_data,public.has_weight 
+            where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=${d1}
+    ),
+    q1 as (
+    select * from public.collection_data,public.has_weight,row_count
+            where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=${d1}
+            order by date_time DESC
+            )
+            
+    select * from q1 
+    order by date_time DESC`
+    ;(async function() {
+        const client = await pool.connect()
+        await client.query(quer1,(err,res)=>{
+            if(!err){
+            
+           
+             var data={
+                device:d1,
+                weight:res.rows,
+                
+            }
+            console.log(data.lim)
+            var device=JSON.parse(JSON.stringify(data))
+            //console.log(devices)
+            callback(null, device)
+            client.end()
+            
+            }
+            else{
+
+            console.log(err.message);
+            callback(err, null)
+            
+
+            }
+            console.log('hello')
+            })
+        client.release()
+        return
+    })()
+
+}
+
+exports.JsonDeviceDataLimit=(ID,limit,pool,callback)=>{
+    var d1=ID
+    
+    console.log(`d1 is ${d1}`)
+    /*var data={
+        device:d1,
+        id:[
+        {"weight":2.54,"lognitude":21.708996,"latitude":41.771312,"time":"12:23","date":"12/11/2021"},
+        {"weight":32.0,"lognitude":21.747221,"latitude":38.236225,"time":"15:23","date":"12/11/2021"}
+        
+    ]
+    }
+    var device=JSON.parse(JSON.stringify(data))*/
+   
+    //* 
+
+    var quer1=`with row_count as (
+        select COUNT(*) as row1 from public.collection_data,public.has_weight 
+            where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=${d1}
+    ),
+    q1 as (
+    select * from public.collection_data,public.has_weight,row_count
+            where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=${d1}
+            order by date_time DESC
+            limit ${limit}
+            )
+            
+    select * from q1 
+    order by date_time DESC`
+    ;(async function() {
+        const client = await pool.connect()
+        await client.query(quer1,(err,res)=>{
+            if(!err){
+            
+           
+             var data={
+                device:d1,
+                weight:res.rows,
+                
+            }
+            console.log(data.lim)
+            var device=JSON.parse(JSON.stringify(data))
+            //console.log(devices)
+            callback(null, device)
             client.end()
             
             }
