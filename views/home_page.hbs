@@ -82,7 +82,7 @@
          <td><p class="lognitude" id="long{{device_id1}}">{{long}}</p></td>
          <td><p class="latitude" id="lat{{device_id1}}" >{{lang}} </p></td>
         <td class="date-time" id="date_time{{device_id1}}"> <p class="date" id="date{{device_id1}}">{{date_time}}</p>&nbsp;<p class="time" id="time{{device_id1}}"> {{time}}</p></td>
-        <td><p>{{is_on}}</p></td>
+        <td><p id="is_on">{{is_on}}</p></td>
         <td><p class="mode">{{mode}}</p></td>
         <td><p class="sample_rate" id="sample_rate{{device_id1}}">{{sample_rate}}</p></td>
         <td class="test"><a href="/device/{{device_id1}}"target="_self" class="a1" ><p>See history</p></a></td>
@@ -332,7 +332,7 @@ function check_refresh(max_pos,ms){
              
        if(mode[i].innerText=='reqular'){
          monada.push('seconds')
-         min_st.push('30')
+         min_st.push('10')
          max_st.push('100')
          div_display.push('')
          reqular.push('checked=true')
@@ -534,55 +534,68 @@ function check_refresh(max_pos,ms){
     //change in dom the weight-latitude-lognitude-date_time
     //ADDING NEW DATA WITH IO
   socket.on('change_weight',(message)=>{
-  console.log('hello there')
-  var b=document.getElementById(`main${message.device_id}`)
-  var device_name=b.getElementsByClassName('task')[0].innerText
-  var weight=b.getElementsByClassName('weight')
+      console.log('hello there')
+      var b=document.getElementById(`main${message.device_id}`)
+      var device_name=b.getElementsByClassName('task')[0].innerText
+      var weight=b.getElementsByClassName('weight')
 
 
-  var lat=document.getElementById(`lat${message.device_id}`)
-  var long=document.getElementById(`long${message.device_id}`)
-  
-  var date1=document.getElementById(`date_time${message.device_id}`);
-  var date_time=new Date(message.date_time)
+      var lat=document.getElementById(`lat${message.device_id}`)
+      var long=document.getElementById(`long${message.device_id}`)
+      
+      var date1=document.getElementById(`date_time${message.device_id}`);
+      var date_time=new Date(message.date_time)
 
-  //changing dom
-  date1.innerText=date_time.toLocaleString()
-  weight[0].innerText=message.weight
-  lat.innerText=message.lang
-  long.innerText=message.long
-  //changing popUp
-  var i=find_id(b.getElementsByClassName('pos')[0].id,mark)
-  var pop=mark[i].mark2.getPopup()
-  var check_if_signed1=document.getElementsByClassName('check_if_signed')
-  var signed1=check_if_signed1[0].id
-  var state
-  var change_state
-  if(weight[0].id=='1'){
-    state='on'
-    change_state='off'
-  }
-  else{
-    state='off'
-    change_state='on'
-  }
-  var content
-  if(signed1=='0'){
-      content=`<a href="/device/${message.device_id}" target="_self" rel="noopener" class="a2">device:${device_name} </a><br><p> weight: ${message.weight} kg<br>${date_time.toLocaleString()} </p>`
-     
-      pop._content=content
+      //changing dom
+      date1.innerText=date_time.toLocaleString()
+      weight[0].innerText=message.weight
+      lat.innerText=message.lang
+      long.innerText=message.long
+      //changing popUp
+      var i=find_id(b.getElementsByClassName('pos')[0].id,mark)
+      var pop=mark[i].mark2.getPopup()
+      var check_if_signed1=document.getElementsByClassName('check_if_signed')
+      var signed1=check_if_signed1[0].id
+      var state
+      var change_state
+      if(weight[0].id=='1'){
+        state='on'
+        change_state='off'
+      }
+      else{
+        state='off'
+        change_state='on'
+      }
+      var content
+      if(signed1=='0'){
+          content=`<a href="/device/${message.device_id}" target="_self" rel="noopener" class="a2">device:${device_name} </a><br><p> weight: ${message.weight} kg<br>${date_time.toLocaleString()} </p>`
+        
+          pop._content=content
 
-  }
-  else{
-      pop._content='<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+message.weight+' kg<br>'+date_time.toLocaleString()+' '+markers[i].time+'</p>' +'<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe><form action="/change_device_settings" method="post"><label for="change state"  id="device_id">'+markers[i].name+'is '+markers[i].state +'</p><br><label for="change_state">Turn '+markers[i].change_state1+ ' Device</label>'+'<input type="checkbox" id="change_state" name="change_state" onclick="change_options()" value='+markers[i].turn_device+'><br><div id='+'all_options '+markers[i].div_option+'> <label for=press_mode>press mode</label><input  type="radio" id=psm onclick="test2()" name="mode" value="press_mode" '+markers[i].press+'><br><label for=psm>power save mode</label><input  type="radio" id=psm onclick="test()" name="mode" value="psm" '+markers[i].psm+'><br><label for=reqular'+markers[i].id+'>reqular mode</label><input  type="radio" id=reqular'+markers[i].id+' onclick="test1()" name="mode" value="reqular" '+markers[i].reqular+' ><br><div id='+'more_options'+''+markers[i].div_display+'><input   type="text" name="device_id" value='+markers[i].id+' style="display: none;" readonly><label for="sample_rate" id='+'sample_rate_label'+'>Choose sample rate('+markers[i].monada+')</label><br><input id="rangeInput" name="sample_rate" type="range" min='+markers[i].min_st+' max='+markers[i].max_st+' value='+markers[i].sample_rate+' oninput="amount.value=rangeInput.value" /><input id="amount" type="number" value='+ markers[i].sample_rate+' min='+markers[i].min_st+' max='+markers[i].max_st+' oninput="rangeInput.value=amount.value" /><br></div></div><input type="submit" value="Save Changes"></form>'
-  }
+      }
+      else{
+          pop._content='<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+message.weight+' kg<br>'+date_time.toLocaleString()+' '+markers[i].time+'</p>' +'<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe><form action="/change_device_settings" method="post"><label for="change state"  id="device_id">'+markers[i].name+'is '+markers[i].state +'</p><br><label for="change_state">Turn '+markers[i].change_state1+ ' Device</label>'+'<input type="checkbox" id="change_state" name="change_state" onclick="change_options()" value='+markers[i].turn_device+'><br><div id='+'all_options '+markers[i].div_option+'> <label for=press_mode>press mode</label><input  type="radio" id=psm onclick="test2()" name="mode" value="press_mode" '+markers[i].press+'><br><label for=psm>power save mode</label><input  type="radio" id=psm onclick="test()" name="mode" value="psm" '+markers[i].psm+'><br><label for=reqular'+markers[i].id+'>reqular mode</label><input  type="radio" id=reqular'+markers[i].id+' onclick="test1()" name="mode" value="reqular" '+markers[i].reqular+' ><br><div id='+'more_options'+''+markers[i].div_display+'><input   type="text" name="device_id" value='+markers[i].id+' style="display: none;" readonly><label for="sample_rate" id='+'sample_rate_label'+'>Choose sample rate('+markers[i].monada+')</label><br><input id="rangeInput" name="sample_rate" type="range" min='+markers[i].min_st+' max='+markers[i].max_st+' value='+markers[i].sample_rate+' oninput="amount.value=rangeInput.value" /><input id="amount" type="number" value='+ markers[i].sample_rate+' min='+markers[i].min_st+' max='+markers[i].max_st+' oninput="rangeInput.value=amount.value" /><br></div></div><input type="submit" value="Save Changes"></form>'
+      }
 
-  change_back_color(b)
- 
-  console.log(message)
-  
+      change_back_color(b)
+    
+      console.log(message)
+      
 
 })
+/*
+socket.on('change_state',(message)=>{
+    console.log(message)
+    var tr=document.getElementById('main'+message.device_id)
+    var mode=tr.getElementsByClassName('mode')[0]
+    var sample_rate=tr.getElementsByClassName('sample_rate')[0]
+    var is_on=tr.getElementById('is_on')
+    if(messsage.change_state==0){
+      mode.innerText=message.mode
+      sample_rate=tr.innerText=message.sample_rate
+    }
+    is_on.innerText=message.change_state
+})*/
 
     </script>
  <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
