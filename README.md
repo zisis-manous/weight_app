@@ -1,7 +1,11 @@
-# wEIGHT APP
+# WEIGHT APP-GROUP 2
 
 Απλή εφαρμογή υλοποίησης της εφαρμογής ΙoT για Low energy weighting systems
-της Ομάδας 2
+της Ομάδας 2.
+Για την ανάπτυξη και διαχείριση της εφαρμογής γίνεται απο την πλατφόρμα `heroku`,μπορεί να βρεθεί `https://weight-app-g2.herokuapp.com/`.
+Απο την ίδια πλατφόρμα χρησιμοποιείται και η βάση δεδομένων `Heroku postgresSQL`.
+Για το `backend` της εφαρμογής γίνεται χρήση node.js.
+Για το `frontend` της εφαρμογής γίνεται χρήση handlebars,css,javascript.
 
 
 
@@ -18,20 +22,16 @@
 
 ## Το μοντέλο - The model
 Ο φάκελος `/models` περιέχει μόνο ένα μοντέλο 
-- `task-list-model-no-db.js`, παιρνει τα δεδομένα που ζητάει ο χρήστης απο την βάση και επιστρέφει 
-το βάρος και την τοποθεσία της συσκευής.
+- `postgres-model.js`, χρησιμοποιείται για να έχει πρόσβαση η εφαρμογή στην βάση δεδομένων postgres sql και επιστρέφει τα αποτελέσματα των queries.
 
 
 
 ## Ο controller
-Στο αρχείο `/controller/task-list-controller.js` περιέχονται οι συναρτήσεις χειρισμού του μοντέλου.
+Στο αρχείο `/controller/weight-app-controller.js` περιέχονται οι συναρτήσεις χειρισμού του μοντέλου.Δηλαδή για τις ενέργειες των apis του server ,ο controller ελέγχει για τις πληροφορίες που ζητάει το route,τις παίρνει απο το models και ελέχθει για το response του server.
+
+## Routes
+Στο αρχείο /routes/weight-app-routes.js είναι υπέυθυνο για τις δρομολογήσεις του server. Κάνει έλεγχο για την σύνδεση του χρήστη,χρησιμοποιώντας το λογισμικό passport για την αυθεντικοποίηση του χρήστη, ελέγχει τις δρομολογήσεις του server. 
 
 
-
-```javascript
-const model = require('../model/task-list-model-no-db.js');
-// const model = require('../model/task-list-model-mongo.js');
-// const model = require('../model/task-list-model-postgres.js');
-```
 
 
