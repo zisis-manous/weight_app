@@ -532,6 +532,7 @@ function check_refresh(max_pos,ms){
   }
 
     //change in dom the weight-latitude-lognitude-date_time
+    //ADDING NEW DATA WITH IO
   socket.on('change_weight',(message)=>{
   console.log('hello there')
   var b=document.getElementById(`main${message.device_id}`)

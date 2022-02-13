@@ -529,7 +529,7 @@ exports.signUser=(pool,user,password,callback)=>{
     console.log('getting data')
     
     var quer=
-    ` SELECT username,userid
+    ` SELECT username,userid,admin
     FROM public.users
    WHERE email = '${user}'
     AND password = crypt('${password}', password);`;
@@ -569,6 +569,36 @@ exports.NameDevices=(pool,callback)=>{
 
     
     
+    ;(async function() {
+        const client = await pool.connect()
+        await client.query(quer,(err,res)=>{
+            if(!err){
+            
+           console.log(res.rows)
+           console.log('getting data from postgress')
+            
+            callback(null, res.rows)
+            client.end()
+            
+            }
+            else{
+
+            console.log(err.message);
+            callback(err, null)
+            
+
+            }
+            console.log('hello')
+            })
+        client.release()
+        return
+    })()
+
+}
+
+exports.check_admin=(pool,id,callback)=>{
+    var quer=
+    ` select admin from public.users where userid=${id};`
     ;(async function() {
         const client = await pool.connect()
         await client.query(quer,(err,res)=>{

@@ -62,6 +62,12 @@ exports.getAllWeights=(request,response)=>{
             rejectUnauthorized: false,
         },
     });
+    const pool2 = new Pool({
+        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
     model.getAllWeights(pool1,(err,devices)=>{
        
         if (err) {
@@ -73,11 +79,27 @@ exports.getAllWeights=(request,response)=>{
         //console.log(devices)
         var a
         if(user!=undefined){
-         a={
-            'username':user.name,
-            'id1':user.id,
-            devices
-        }}
+            console.log('check')
+            console.log(user.admin)
+            if(user.admin==1){
+                a={
+                    'username':user.name,
+                    'id1':user.id,
+                    'admin':1,
+                    devices
+                }
+
+            }
+            else{
+                a={
+                    'username':user.name,
+                    'id1':user.id,
+                    devices
+                }
+
+            }
+    
+    }
         else{
             a={
                 devices
@@ -123,8 +145,12 @@ exports.getID=(request,response)=>{
             'id1':user.id,
             device
         }
+        
         device['username']=user.name
         device['id1']=user.id
+        if(user.admin==1){
+            device['admin']=1
+        }
     }
         else{
             a={
@@ -142,6 +168,9 @@ exports.getID=(request,response)=>{
 exports.AddWeight=(io,request,response)=>{
     if(request.body.password=="arduino"){
         io.emit('change_weight', request.body);
+        var string1='new_weight'+request.body.device_id
+        console.log('STRING1-->'+string1)
+        io.emit(string1,request.body)
     const pool1 = new Pool({
         connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
         ssl: {
@@ -222,7 +251,7 @@ exports.getDevicesData=(request,response)=>{
         if (err) {
             response.send(err);
         }
-        console.log(devices.devices[0])
+        //console.log(devices.devices[0])
         for(var i=0;i<devices.devices.length;i++){
             if(devices.devices[i].mode=='psm'){
                 devices.devices[i].mode=1
@@ -303,6 +332,9 @@ exports.DataPlot=(request,response)=>{
             }
             device['username']=user.name
             device['id1']=user.id
+            if(user.admin==1){
+                device['admin']=1
+            }
         }
             console.log(device.username)
            console.log(device.lim)
@@ -434,7 +466,9 @@ exports.signUser=(user,password,callback)=>{
         }
         else{
             console.log('returning authenticated user')
+            
             let authenticated_user = user_det
+            
             //console.log('auth user')
             //console.log(authenticated_user)
             //let authenticated_user = { id: 123, name: user}
@@ -465,6 +499,26 @@ exports.NameDevices=(request,response)=>{
 
         }
         response.send(devices_name)
+
+    })
+    
+}
+
+exports.CheckAdmin=(request,response)=>{
+    console.log(request.body)
+    const pool1 = new Pool({
+        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+    model.check_admin(pool1,2,(err,is_admin)=>{
+        if(err){
+            response.send(err)
+
+        }
+        console.log(is_admin[0].admin)
+        response.send(is_admin)
 
     })
     

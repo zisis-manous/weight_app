@@ -20,7 +20,9 @@
       <a href="#about">About</a>
       {{#if username}}
         <a id="username">{{username}}</a>
+        {{#if admin}}
         <a href="/register">Add new user</a>
+        {{/if}}
         <a href="/logout">logout</a>
          {{else}}
       <a href="/login">Login</a>

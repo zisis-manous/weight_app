@@ -65,7 +65,7 @@ passport.deserializeUser((user, done) => {
       //console.log("---------> Deserialize Id")
       
 
-      done (null, {name: user.username, id: user.userid} )      
+      done (null, {name: user.username, id: user.userid,admin:user.admin} )      
 
 }) 
 
@@ -148,7 +148,7 @@ router.use(printData)*/
 //δουλευει με arduinoo
 router.post('/handle',(req,res)=>{
   console.log(req.body)
-  io.emit('message', req.body);
+  //io.emit('message', req.body);
 
   res.send(req.body)
 })
@@ -215,7 +215,12 @@ router.get('/register',(req,res)=>{
             'username':user.name,
             'id1':user.id
             
-        }}
+        }
+        if(user.admin==1){
+          a['admin']=1
+        }
+      }
+        
         else{
             a={
                 
@@ -243,6 +248,7 @@ router.get('/success',(req,res)=>{
 })
 
 router.get('/name_devices',deviceController.NameDevices)
+//router.get('/test1',deviceController.CheckAdmin)
 /*
 router.get('device/api/scales/:path',(request,response)=>{
     

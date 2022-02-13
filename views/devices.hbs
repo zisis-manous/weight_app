@@ -43,7 +43,7 @@
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/data.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
- 
+  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
  </head>
 
 
@@ -58,7 +58,7 @@
  <canvas id="myChart" class="div_map" ></canvas>  -->
  <div id="outer">
    <div class="graph">
-     <div style="display: flex;"> <h4 class='title' style="display:none;">{{device}}</h4><div class="dot" id="dbutton"><img  src="https://image.flaticon.com/icons/png/512/57/57085.png" class="down_btn"></div></div>
+     <div style="display: flex;"> <h4 class='title' style="display:none;"id='{{device}}'>{{device}}</h4><button class="dot" onclick="more_options()"id="dbutton"><img  src="https://image.flaticon.com/icons/png/512/57/57085.png" class="down_btn"></div></button>
      <div class="other_device">
        <ul class="list_devices">
         
@@ -75,7 +75,7 @@
 <div class="devices">
    
 <h2 id='scale' style="color: aliceblue;">History</h2>
-<p>{{lim}}</p>
+<p style="display:none">{{lim}}</p>
 
 <div style="color: aliceblue;">Υπάρχουν <div id='metriseis' style="color: aliceblue;">{{id.0.row1}}</div> Μετρήσεις</div> 
 <table class='tasks' id="list">
@@ -126,7 +126,7 @@
 </div>
 </div>
 <script>
-  
+  const socket = io();
 async function name_devices () {
    fetch('/name_devices')
       .then( async (response) => {
@@ -145,6 +145,7 @@ async function name_devices () {
         for(j=0;j<data.length;j++){
           if(data[j].device_id==title){
               document.getElementsByClassName('title')[0].innerText=data[j].device_name
+              document.getElementsByClassName('title')[0].id=data[j].device_id
               document.getElementsByClassName('title')[0].style.display='block'
           }
         }
@@ -181,7 +182,8 @@ name_devices()
     }
   }
   var down_btn=document.getElementById('dbutton')
-  down_btn.onclick=more_options
+  //down_btn.onclick=more_options
+
 
   
 
@@ -334,7 +336,7 @@ Highcharts.setOptions({
         timezoneOffset: -2*60
     }
 });
-Highcharts.chart('container', {
+var chart=new Highcharts.chart('container', {
   chart: {
     type: 'spline'
   },
@@ -436,6 +438,46 @@ Highcharts.chart('container', {
     }]
   }
 });
+
+
+
+  function append_data(data){
+    var table=document.getElementById('list')
+    var new_html=`<tr>
+      <!--<a href="/device/{{id}}"target="_self" class="a1" > -->
+     
+      
+     <!-- <div class="weight_button" id='button${data.id}' onclick="OpenPopUp(${data.id})">&nbsp;-->
+        <td> <p class='weight' > ${data.weight}</p> </td>
+         <td><p class="lognitude" >${data.long}</p></td>
+         <td><p class="latitude" >${data.lang} </p></td>
+        <td> <p class="date-time">${data.date_time}</p></td>
+    </tr>`
+   
+    table.innerHTML=table.innerHTML+new_html
+
+    //for chart
+    var d=new Date(data.date_time)
+    var new_data=[d.valueOf(),data.weight]
+    chart.series[0].addPoint(new_data,false)
+    chart.redraw()
+
+    //
+    var sum_metr=document.getElementById('metriseis')
+    sum_metr.innerText=parseInt(sum_metr.innerText)+1
+  }
+
+
+    var dev_id=document.getElementsByClassName('title')[0].id
+    var string2='new_weight'+dev_id
+   socket.on(string2,(message)=>{
+     
+      console.log(message)
+      append_data(message)
+
+   })
+
+
 /*
 new Chart("myChart",   {
     type: 'line',

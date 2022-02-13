@@ -42,7 +42,7 @@ button{
     width: 100%;
     box-shadow:2px 2px 5px rgba(14, 14, 14, 0.678);
 }
-input[type=email], input[type=password], input[type=username] {
+input[type=email], input[type=password], input[type=text] {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -50,3 +50,8 @@ input[type=email], input[type=password], input[type=username] {
     border: 1px solid #ccc;
     box-sizing: border-box;
   }
+  
+
+  
+
+ 
