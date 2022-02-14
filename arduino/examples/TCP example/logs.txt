@@ -1,0 +1,55 @@
+19:08:52.708 -> at+cipstatus
+
+19:08:52.708 -> OK
+19:08:52.708 -> 
+19:08:52.708 -> STATE: IP INITIAL
+19:08:53.755 -> at+cstt="iot.1nce.net"
+
+19:08:53.755 -> OK
+19:08:55.222 -> at+cipstatus
+
+19:08:55.270 -> OK
+19:08:55.270 -> 
+19:08:55.270 -> STATE: IP START
+19:08:57.730 -> at+ciicr
+
+19:09:00.796 -> OK
+19:09:02.298 -> at+cipstatus
+
+19:09:02.298 -> OK
+19:09:02.298 -> 
+19:09:02.298 -> STATE: IP GPRSACT
+19:09:03.297 -> at+cifsr
+
+19:09:03.297 -> 100.112.166.11
+19:09:04.773 -> at+cipstatus
+
+19:09:04.820 -> OK
+19:09:04.820 -> 
+19:09:04.820 -> STATE: IP STATUS
+19:09:10.327 -> at+cipstart="TCP","api.thingspeak.com","80"
+
+19:09:10.327 -> OK
+19:09:10.375 -> 
+19:09:10.375 -> CONNECT OK
+19:09:11.837 -> at+cipstatus
+
+19:09:11.837 -> OK
+19:09:11.837 -> 
+19:09:11.837 -> STATE: CONNECT OK
+19:09:12.933 -> at+cipsend
+
+19:09:12.933 -> > GET https://api.thingspeak.com/update?api_key=REG2BIGQ4QGV5PJ2&field1=3.41
+19:09:14.214 -> 
+19:09:20.701 -> 
+19:09:20.701 -> SEND OK
+19:09:20.701 -> 1261
+19:09:20.701 -> CLOSED
+19:09:20.701 -> at+cipstatus
+
+19:09:20.747 -> OK
+19:09:20.747 -> 
+19:09:20.747 -> STATE: TCP CLOSED
+19:09:23.202 -> at+cipshut
+
+19:09:23.252 -> SHUT OK
