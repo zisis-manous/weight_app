@@ -1,15 +1,53 @@
+
 # WEIGHT APP-GROUP 2
 
 Απλή εφαρμογή υλοποίησης της εφαρμογής ΙoT για Low energy weighting systems
 της Ομάδας 2.
-Για την ανάπτυξη και διαχείριση της εφαρμογής γίνεται απο την πλατφόρμα `heroku`,μπορεί να βρεθεί `https://weight-app-g2.herokuapp.com/`.
+Για την ανάπτυξη και διαχείριση της [εφαρμογής](https://weight-app-g2.herokuapp.com/) γίνεται απο την πλατφόρμα `heroku`.
+Για να λειτουργήσει η εφαρμογή δεν χρειάζεται κάποια εγκατάσταση αφού μπορεί να βρεθεί στο `https://weight-app-g2.herokuapp.com/`.
 Απο την ίδια πλατφόρμα χρησιμοποιείται και η βάση δεδομένων `Heroku postgresSQL`.
-Για το `backend` της εφαρμογής γίνεται χρήση node.js.
-Για το `frontend` της εφαρμογής γίνεται χρήση handlebars,css,javascript.
+##Εφαρμογή για Low energy weighting systems
+Η [εφαρμογή](https://weight-app-g2.herokuapp.com/) χρησιμοποιείται για έλεγχο και διαχείριση των 
+
+## Οδηγίες για εκτέλεση της εφαρμογής σε τοπικό επίπεδο
+Η εφαρμογή που λειτουργεί με την συσκευή υπάρχει στο σύνδεσμο `https://weight-app-g2.herokuapp.com/`.
+Η εφαρμογή χρησιμοποιεί για το `backend` την node.js και για το `frontend` γίνεται χρήση handlebars,css,javascript.
+Οπότε θα πρέπει να υπάρχουν εγκατεστημένα
+* [Node.js](https://nodejs.org/en/download/)
+* Εγκατάσταση ενός packet management ,προτείνεται το [NPM](https://www.npmjs.com/)
+* Το προγραμματιστικό περιβάλλον να είναι συμβατό με τις προγραμματιστικές γλώσσες
+  - Handlebars
+  - Css
+  - Javascript
+
+Τα πακέτα που πρέπει να εγκαταστηθούν (με npm instal packet)
+* express
+* express-handlebars
+* http
+* socket.io
+* socket.io-client
+* express-session
+* passport
+* passport-local
+* pg
+* nodemon
+Όλα τα πακέτα,μαζί με τις εκδοχές τους,βρίσκοντα στο φάκελο [package.json](/package.json) και [package-lock.json](/package-lock.json).
+
+Tα scripts στον client που χρησιμοποιούνται είναι 
+* <script src="https://code.highcharts.com/highcharts.js "></script>
+* <script src="https://code.highcharts.com/modules/data.js "></script>
+* <script src="https://code.highcharts.com/modules/exporting.js "></script>
+* <script src="https://cdn.socket.io/4.4.1/socket.io.min.js "></script>
+* <script src="/leaflet.js"></script>
+**Σημείωση 1** Τα πακέτα socket.io και socket.io-client στο backend και το script στον client,<script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>, πρέπει να είναι ίδια εκδοχή για να λειτουργεί η σύνδεση με sockets,συγκεκριμένα χρησιμοποιείται η εκδοχή 4.4.1
+**Σημείωση 2** Στην σύνδεση στη βάση δεδομένων heroku PostgresSQL,τα στοιχεία σύνδεσης αλλάζουν αυτόματα ,οπότε αν υπάρχει αδυναμία σύνδεσης με βάσης είναι γιατί πρέπει να ανανεωθούν τα στοιχεία για να δουλέψει σε τοπικό επίπεδο.
+
+
+  
 
 
 
-## Λεπτομέρειες - Details
+## Εξήγηση κώδικα εφαρμογής
 
 Το `app.js` ακολουθεί τη λογική MVC. Το πρόγραμμα μοιράζεται σε διάφορα τμήματα: 
  - `/model` παρέχει την πρόσβαση στα δεδομένα.
@@ -17,8 +55,6 @@
  - Οι φάκελοι `views` και `routes`:
   - Ο `/views` περιέχει template γραμμένα σε handlebars.
   - Ο `/routes` περιέχει τις διαδρομές που αναγνωρίζει η εφαρμογή.
-
-
 
 ## Το μοντέλο - The model
 Ο φάκελος `/models` περιέχει μόνο ένα μοντέλο 
