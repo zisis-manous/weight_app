@@ -1,16 +1,14 @@
 'use strict';
-const res = require('express/lib/response');
-const { response } = require('../app.js');
+
 /** You can define other models as well, e.g. postgres */
 const model = require('../model/postgres-model.js');
 
-var mysql = require('mysql');
+
 
 const store = require("store2");
 
 const Pool = require("pg").Pool;
-const { reset } = require('nodemon');
-const req = require('express/lib/request');
+
 require("dotenv").config();
 const isProduction = process.env.NODE_ENV === "production";
 const connectionString = `postgresql://${process.env.PG_USER}:${process.env.PG_PASSWORD}@${process.env.PG_HOST}:${process.env.PG_PORT}/${process.env.PG_DATABASE}`;
@@ -31,31 +29,13 @@ exports.giveInputWeight=(req,res)=>{
     console.log(req.params.path)
     res.send(req.params.path)
 }
+
+//1 getting the last collection data for each device and creates the homepage 
 exports.getAllWeights=(request,response)=>{
     console.log('get all weights')
     //console.log(request.user)
     var user=request.user
     store.setAll({name: 'Adam', age: 34})
-    /*const client2=new Client({
-        host: "localhost",
-        user:"postgres",
-        port:5432,
-        password:"3c3aedff0a",
-        database: "scale_devices"
-      
-      })*/
-
-          /*
-        host: "ec2-54-229-47-120.eu-west-1.compute.amazonaws.com",
-        user:"jpbdcgwojbmmvg",
-        port:5432,
-        password:"375818917adcdfcf4cf011ec2608bfc0b927293963c6febe5e6eba5b40493513",
-        database: "d21pclk7o4hrfl"
-      
-      })*/
-      
-   // response.render('tasks',devices)
-    //*
     const pool1 = new Pool({
         connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
         ssl: {
@@ -74,13 +54,11 @@ exports.getAllWeights=(request,response)=>{
             response.send(err);
         }
         
-        //pool1.end();
-        //pool1.
-        //console.log(devices)
+        
         var a
+        //checking if user is signed in/admin or not to create the json
         if(user!=undefined){
-            console.log('check')
-            console.log(user.admin)
+           
             if(user.admin==1){
                 a={
                     'username':user.name,
@@ -105,20 +83,15 @@ exports.getAllWeights=(request,response)=>{
                 devices
             }
         }
-        //console.log(a)
+        
         var data=JSON.parse(JSON.stringify(a))
+        //renders the hbs file home_page and gives it the data for the page
         response.render('home_page', data);
-    })//*/
+    })
 }
+//2 for certain device ,gets the 10 last data and creates the device page 
 exports.getID=(request,response)=>{
-    /*const client1=new Client({
-        host: "ec2-54-229-47-120.eu-west-1.compute.amazonaws.com",
-        user:"jpbdcgwojbmmvg",
-        port:5432,
-        password:"375818917adcdfcf4cf011ec2608bfc0b927293963c6febe5e6eba5b40493513",
-        database: "d21pclk7o4hrfl"
-      
-      })*/
+   
       const pool = new Pool({
     connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
     ssl: {
@@ -130,13 +103,13 @@ exports.getID=(request,response)=>{
      
      var user=request.user
      
-    console.log(request.params.device_id)
+    //gets from the database the data
     model.getID(request.params.device_id,limit,pool,(err,device)=>{
         if (err) {
             response.send(err);
         }
         //pool.end();
-        console.log(device)
+        
         device['limit']=limit
         var a
         if(user!=undefined){
@@ -158,18 +131,20 @@ exports.getID=(request,response)=>{
             }
         }
         var data=JSON.parse(JSON.stringify(a))
-        console.log(data)
+        //renders the hbs file devices with data device
         response.render('devices',device)
     })
    
 
 }
-
+//3 handles when a new collection data have been sent for the device
 exports.AddWeight=(io,request,response)=>{
+    //checks if the password is correct
     if(request.body.password=="arduino"){
+        //sends from sockets for updating the pages, homepage and device history 
         io.emit('change_weight', request.body);
         var string1='new_weight'+request.body.device_id
-        console.log('STRING1-->'+string1)
+        
         io.emit(string1,request.body)
     const pool1 = new Pool({
         connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
@@ -177,22 +152,25 @@ exports.AddWeight=(io,request,response)=>{
             rejectUnauthorized: false,
         },
         });
-    //console.log(request.body);
+    //updating the database
     model.add_weight(request.body,pool1,(err,okay)=>{
-        //pool1.end()
+        
         if(err){
             response.send(err);
         }
+        //if everything is alright it responds
         response.send(okay)
 
 
     })
     }
     else{
+        //if the wrong password is given it sends the proper respond
         response.send('wrong password')
     }
 }
 
+//4 checks the device state
 exports.seeConnectivity=(request,response)=>{
     var id=request.params.id;
     console.log(id)
@@ -213,8 +191,10 @@ exports.seeConnectivity=(request,response)=>{
 
 }
 
+//5 closes or opens the device
 exports.ChangeDeviceState=(request,response)=>{
     var id=request.params.id;
+    //checks if the password is correct
     if(request.body.password=="arduino"){
         const pool1 = new Pool({
             connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
@@ -222,23 +202,25 @@ exports.ChangeDeviceState=(request,response)=>{
                 rejectUnauthorized: false,
             },
             });
-        //console.log(request.body);
+        //updates the database with the new state
         model.ChangeDeviceState(id,pool1,(err,okay)=>{
             //pool1.end()
             if(err){
                 response.send(err);
             }
+            //gives the proper respond
             response.send(okay)
     
     
         })
         }
         else{
+            //if the password is wrong ,gives the proper respond
             response.send('wrong password')
         }
 
 }
-
+//6 gets the state of all the devices 
 exports.getDevicesData=(request,response)=>{
     const pool1 = new Pool({
         connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
@@ -246,12 +228,14 @@ exports.getDevicesData=(request,response)=>{
             rejectUnauthorized: false,
         },
     });
+    //gets from the database the devices data
     model.getDevicesData(pool1,(err,devices)=>{
        
         if (err) {
             response.send(err);
         }
-        //console.log(devices.devices[0])
+   
+        //changing the device mode from string to integers
         for(var i=0;i<devices.devices.length;i++){
             if(devices.devices[i].mode=='psm'){
                 devices.devices[i].mode=1
@@ -265,12 +249,13 @@ exports.getDevicesData=(request,response)=>{
 
             }
         }
-        //pool1.end();
-        //pool1.
+      
+        //responds with a json
         response.send(devices);
-    })//*/
+    })
 }
 
+//7 changes the device settings from the homepage 
 exports.Change_Device_Setting =(io,req,res)=>{
     var sample_rate2
     const pool1 = new Pool({
@@ -290,8 +275,7 @@ exports.Change_Device_Setting =(io,req,res)=>{
     else{
         change_state='hello'
     }
-    console.log('he')
-    console.log(req.body)
+    
     io.emit('change_state', req.body);
         var string1='new_state'+req.body.device_id
         console.log('STRING1-->'+string1)
@@ -311,6 +295,7 @@ exports.Change_Device_Setting =(io,req,res)=>{
     
   }
 
+  //8 changes the device settings from the device page
 exports.Change_Device_Setting2 =(io,req,res)=>{
     var sample_rate2
     const pool1 = new Pool({
@@ -330,19 +315,18 @@ exports.Change_Device_Setting2 =(io,req,res)=>{
     else{
         change_state='hello'
     }
-    console.log('he')
-    console.log(req.body)
+    
     io.emit('change_state', req.body);
         var string1='new_state'+req.body.device_id
-        console.log('STRING1-->'+string1)
+        
         io.emit(string1,req.body)
     model.ChangeDeviceSettings(req.body.device_id,req.body.sample_rate,change_state,req.body.mode,pool1,(err,message)=>{
         if (err) {
             res.send(err);
         }
         
-        //pool1.end();
-        //pool1.
+       
+        //redirects to the device page
         res.redirect(`/device/${req.body.device_id}`)
 
     })
@@ -351,6 +335,7 @@ exports.Change_Device_Setting2 =(io,req,res)=>{
     
   }
 
+  //9 gets the device data for certain limit 
 exports.DataPlot=(request,response)=>{
     const pool = new Pool({
         connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
@@ -363,7 +348,7 @@ exports.DataPlot=(request,response)=>{
          
          var user=request.user
        
-        console.log(request.params.id)
+        //gets from database the data with limit
         model.getID(request.params.id,limit,pool,(err,device)=>{
             if (err) {
                 response.send(err);
@@ -371,6 +356,7 @@ exports.DataPlot=(request,response)=>{
             //pool.end();
             //console.log(device)
             var a
+            //checks if the user is signed in
             if(user!=undefined){
              a={
                 'username':user.name,
@@ -385,13 +371,15 @@ exports.DataPlot=(request,response)=>{
         }
             console.log(device.username)
            console.log(device.lim)
+           //renders the hbs file devices with the limit
             response.render('devices',device)
         })
        
        
 }
 
-
+//10 checks the sum of the collection data
+//to see if there is new data to refresh the homepage
 exports.RefreshHomepage=(request,response)=>{
     const pool1 = new Pool({
         connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
@@ -417,6 +405,7 @@ exports.loginUser=(request,response)=>{
     console.log(request)
     response.send('okay')
 }
+//11 adding new user 
 exports.registerUser=(request,response)=>{
     
     const pool1 = new Pool({
@@ -425,29 +414,29 @@ exports.registerUser=(request,response)=>{
             rejectUnauthorized: false,
         },
     });
+        //checks if the email exists
         model.EmailExists(pool1,request.body.email,(err,return_message)=>{
             console.log(return_message)
             if (err) {
                 response.send(err)
             }
             else if(return_message.length==0){
+                 //if it doesn't exists creates the new user
                 model.AddUser(pool1,request,(err,return_message)=>{
         
                     if (err) {
                         response.send(err)
                     }
-                    
+                    //if it exists redirects to /login
                    response.redirect('/login')
-                   // response.send(return_message)
-                    //pool1.end();
-                    //pool1.
-                    //console.log(devices)
+                 
                     
                 })
 
 
             }
             else{
+               //if exists ,redirects to register page
                 var a
                     if(user!=undefined){
                         a={
@@ -465,41 +454,19 @@ exports.registerUser=(request,response)=>{
             }
 
         })
-    
-        /*
-        model.AddUser(pool1,request,(err,return_message)=>{
-        
-            if (err) {
-                response.render('register',{email:1})
-            }
-            
-           response.redirect('/login')
-           // response.send(return_message)
-            //pool1.end();
-            //pool1.
-            //console.log(devices)
-            
-        })//*/
-    
-}
 
+}
+//12 handles when a user login
 exports.signUser=(user,password,callback)=>{
     
-    /*if(user=='zisismanous@gmail.com' || user=='test@gmail.com'){
-        let authenticated_user = { id: 123, name: user}
-        callback(null,authenticated_user)
-        return
-    }
-    else{
-        callback(null,null)
-        return
-    }*/
+  
     const pool1 = new Pool({
         connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
         ssl: {
             rejectUnauthorized: false,
         },
     });
+    //checks the login data with the users data
     model.signUser(pool1,user,password,(err,user_det)=>{
         console.log('have accessed postgress')
         //console.log(user_det)
@@ -507,18 +474,18 @@ exports.signUser=(user,password,callback)=>{
             console.log(err)
             return callback(null,null)
         }
+        //for wrong login doesn't login and redirects to /login
         else if(user_det.length==0){
             return callback(null,null)
             
         }
         else{
+            //successfull login ,parsing the user in cookies 
             console.log('returning authenticated user')
             
             let authenticated_user = user_det
             
-            //console.log('auth user')
-            //console.log(authenticated_user)
-            //let authenticated_user = { id: 123, name: user}
+            
             return callback(null,authenticated_user[0])
             
 
@@ -531,7 +498,7 @@ exports.signUser=(user,password,callback)=>{
 
 
 }
-
+//13 json to return the devices names
 exports.NameDevices=(request,response)=>{
     console.log(request.body)
     const pool1 = new Pool({
@@ -550,7 +517,7 @@ exports.NameDevices=(request,response)=>{
     })
     
 }
-
+//14 checks if a user is admin
 exports.CheckAdmin=(request,response)=>{
     console.log(request.body)
     const pool1 = new Pool({
@@ -570,7 +537,7 @@ exports.CheckAdmin=(request,response)=>{
     })
     
 }
-
+//15 gets from database all the data and return json
 exports.JsonDeviceWeight=(request,response)=>{
     const pool = new Pool({
         connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
@@ -597,7 +564,7 @@ exports.JsonDeviceWeight=(request,response)=>{
     
 
 }
-
+//16 gets from database the device data with limit and returns json
 exports.JsonDeviceWeightLimit=(request,response)=>{
     const pool = new Pool({
         connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
@@ -623,24 +590,3 @@ exports.JsonDeviceWeightLimit=(request,response)=>{
 
     
 }
-/*
-exports.getID=(id,request,response)=>{
-    console.log(`get all weights for ${id}`)
-    model.getID(id,(err,devices)=>{
-        if (err) {
-            response.send(err);
-        }
-        console.log('want to render',devices)
-        var data={
-            id:[
-            {"weight":2.54,"lognitude":21.708996,"latitude":41.771312,"time":"12:23","date":"12/11/2021"},
-            {"weight":30.0,"lognitude":21.747221,"latitude":38.236225,"time":"15:23","date":"12/11/2021"}
-            
-        ]
-        }
-        var device=JSON.parse(JSON.stringify(data))
-        response.render('devices',device);
-    })
-    
-}
-*/

@@ -1,45 +1,11 @@
 
-
-
-<!--
-    <p>Scales</p>
-<ul class='tasks'>
-    {{#each id }}
-    
-    <li class='task' id={{id}}>weight: {{weight}}, lognitude: {{lognitude}}, latitude: {{latitude}}, time: {{time}}, date: {{date}}</li>
-    {{/each}}
-</ul>
-
- <head profile="http://gmpg.org/xfn/11">
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
- -->
- <head>    <!--  <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
-      
-      
-     <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js'></script> -->
+ <head>    
 
 
   
       <link rel="stylesheet" href="/css/device.css" />
       <link rel="stylesheet" href="/css/navigations_bar.css" />
-     <!--  
-      <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.min.js"></script>
-   
--->
-    <!-- 
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.js"></script>
-     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
--->
-<!--
- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script> 
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.0/Chart.bundle.min.js"></script> 
-      <script type="text/javascript"></script> 
- <script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/series-label.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
-<script src="https://code.highcharts.com/modules/accessibility.js"></script>-->
+    
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/data.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -126,7 +92,7 @@
       
         <label for="limit">choose data:</label>
         <select id="limit" name="{{lim}}" onchange="change_ref();">
-        <!--   <input type="text" id="device_id" name="device_id"  style="display:none;" value={{device}} readonly>  -->
+     
         <option value={{lim}} >{{lim}}</option> 
          
           
@@ -134,25 +100,21 @@
       <button  value="Get Data"  ><a id='limit1' style="color: #2b2b2b; text-decoration: none;" href='/device/{{device}}/limit/{{lim}}'>more data</a></button>
      
       </td>
-    <!--  <td>Date</td>-->
+  
     </tr>
     {{#each id }}
    
     <tr>
-      <!--<a href="/device/{{id}}"target="_self" class="a1" > -->
-     
-      
-     <!-- <div class="weight_button" id='button{{id}}' onclick="OpenPopUp({{id}})">&nbsp;-->
+    
         <td> <p class='weight' > {{weight}}</p> </td>
          <td><p class="lognitude" >{{long}}</p></td>
          <td><p class="latitude" >{{lang}} </p></td>
         <td> <p class="date-time"> {{date_time}}</p></td>
-    <!--     <td> <p class="date" >{{date}}&nbsp;</p></td>-->
+
        
-       <!--  </div> -->
+       
     </tr>
  
-   <!-- <li class='task' id={{id}}>weight: {{weight}}, lognitude: {{lognitude}}, latitude: {{latitude}}, time: {{time}}, date: {{date}}</li> -->
     {{/each}}
 </table>
 
@@ -167,6 +129,11 @@
 
 <script>
   const socket = io();
+
+//get request to take the device name and the name of the other devices
+//we use it ,to create an option to go the the others devices history without going back to the homepage
+//when the down button is clicked ,it open the names of the other devices and when a name is clicked ,it redirects
+//the clicked device history
  async function name_devices () {
    fetch('/name_devices')
       .then( async (response) => {
@@ -209,7 +176,8 @@
       })
      
 }
-
+//get request ,that returns the current settings of the device
+//and creates the form settings ,so if the user wants to change it ,they can
 async function device_settings () {
   var device_id1=document.getElementsByClassName('title')[0].id
   
@@ -232,7 +200,7 @@ async function device_settings () {
   var current_state=document.getElementById('device_id')
   var is_on
   
-  console.log('chec')
+  //console.log('chec')
          
         console.log(data.device[0])
         data=data.device[0]
@@ -241,12 +209,14 @@ async function device_settings () {
         var is_on
         var change_is
         var state_value
+        var change_state
         var t1=document.getElementById('all_options')
-        console.log(t1.style.display)
-        
+        //console.log(t1.style.display)
+        console.log('AAA')
         
         if(data.is_on==1){
           is_on='on'
+          change_state='0'
           change_is='off'
           state_value=0
           t1.style.display='block'
@@ -255,6 +225,7 @@ async function device_settings () {
         else if(data.is_on==0){
           is_on='off'
           change_is='on'
+          change_state='1'
           state_value=1
           t1.style.display='none'
         }
@@ -264,7 +235,7 @@ async function device_settings () {
         document.getElementById('change_state1').innerText=' Turn '+change_is+' Device'
 
         var checkbox=document.getElementById('change_state')
-        
+        checkbox.value=change_state
 
         var in_pressmode=document.getElementById('psm')
         var in_psm=document.getElementById('psm1')
@@ -303,82 +274,18 @@ async function device_settings () {
        }
 
 
-        /*
-        console.log('chec')
-         data=data.device[0]
-        console.log(data)
-        var is_on
-        var change_is
-        var state_value
-        if(data.is_on==1){
-          is_on='on'
-          change_is='off'
-          state_value=0
-          
-        }
-        else{
-        is_on='off'
-        change_is='on'
-        state_value=1
-        
-        var r1=change_state
-            var t1=document.getElementById('all_options')
-            console.log(r1.checked)
-            if(t1.style.display=='none'){
-              t1.style.display='block'
-            }
-            else{
-              t1.style.display='none'
-            }
-        
-
-        }
-        var label_state=document.getElementById('device_id')
-        label_state.innerText=data.device_name +' is ' +is_on
-        document.getElementById('change_state1').innerText=' Turn '+change_is+' Device'
-
-        var checkbox=document.getElementById('change_state')
-        
-
-        var in_pressmode=document.getElementById('psm')
-        var in_psm=document.getElementById('psm1')
-        var in_reqular=document.getElementById('reqular0')
-
-        if(data.mode='press_mode'){
-          in_pressmode.checked=true
-          var r1=document.getElementById('more_options')
-          r1.style.display='none'
-        }
-        if(data.mode=='psm'){
-          in_psm.checked=true
-          document.getElementById('sample_rate_label').innerText='Choose sample rate(hours)'
-          document.getElementById('amount').value=data.sample_rate
-          document.getElementById('amount').min=1
-          document.getElementById('amount').max=6
-        }
-        if(data.mode=='reqular'){
-          in_reqular.checked=true
-          document.getElementById('sample_rate_label').innerText='Choose sample rate(seconds)'
-          document.getElementById('amount').value=data.sample_rate
-            document.getElementById('amount').min=15
-          document.getElementById('amount').max=100
-       }
-
-        */
-      //document.getElementsByClassName('settings')[0].style.display='block'
-        
-        
-
       })
       .catch((err) => {
           console.log(err);
       })
      
 }
+
+//we call the get requests functions
  name_devices()
 device_settings()
 
-
+//function to open the settings ,when the settings option is clicked
 function open_settings(){
   if(document.getElementsByClassName('settings')[0].style.display=='block'){
     document.getElementsByClassName('settings')[0].style.display='none'
@@ -390,7 +297,7 @@ function open_settings(){
 }
 
   function more_options(){
-    console.log('ww')
+    //console.log('ww')
     var div_dev=document.getElementsByClassName("other_device")
     if(div_dev[0].style.display!='none'){
       div_dev[0].style.display='none'
@@ -405,7 +312,7 @@ function open_settings(){
 
   
 
-
+//functions to change the date_time
   function padTo2Digits(num) {
   return num.toString().padStart(2, '0');
 }
@@ -425,6 +332,9 @@ function formatDate(date) {
     ].join(':')
   );
 }
+
+
+//function change_ref to change the limit of the device data 
   function change_ref(){
     var opt=document.getElementById('limit')
     var new_lim=opt.options[opt.selectedIndex].value
@@ -433,7 +343,7 @@ function formatDate(date) {
     var href =a.href.substring(0,51)
     href=href+String(new_lim)
     a.href=href
-    console.log(a.href)
+    //console.log(a.href)
   }
   var metriseis=document.getElementById('metriseis');
   var row1=parseInt(metriseis.innerText)
@@ -456,7 +366,7 @@ function formatDate(date) {
     
   }
   
-
+  //we take the data of the device ,so we can create the graph
   var wei=document.getElementsByClassName("weight");
   var date=document.getElementsByClassName("date-time");
   
@@ -474,7 +384,7 @@ function formatDate(date) {
     
     var da=new Date(a);
 
-    console.log(da.toLocaleDateString())
+    //console.log(da.toLocaleDateString())
     date[i].innerText=da.toLocaleString()
 
     dates.push(da.toLocaleString())
@@ -509,6 +419,8 @@ for(i=0;i<data1.length;i++){
 function newDate(days) {
   return moment().add(days, 'd');
 }
+
+//we create the graph using Highcarts
 
 Highcharts.setOptions({
     time: {
@@ -594,6 +506,7 @@ var chart=new Highcharts.chart('container', {
 });
 
 
+  //function to append the data in table and graph
 
   function append_data(data){
     var table=document.getElementById('list')
@@ -624,16 +537,20 @@ var chart=new Highcharts.chart('container', {
 
     var dev_id=document.getElementsByClassName('title')[0].id
     var string2='new_weight'+dev_id
+    //socket to listen when new data of the device is submitted
    socket.on(string2,(message)=>{
      
-      console.log(message)
+      //console.log(message)
       append_data(message)
 
    })
 
 
 
-
+//the functions to change the form ,depending the mode of the device 
+//for example when we want the device to turn off ,we cant change the mode and sample rate
+//or when we want to have reqular mode the sample rate is 10 to 60 seconds ,but in psm mode is 1 to 6 hours
+//so when an option is chosen ,it calls one of those functions to change the form settings
 
 function test(){
               console.log('hello there')
@@ -689,6 +606,8 @@ function test(){
 
 var id=document.getElementsByClassName('title')[0].id
 var sock='new_state'+id
+
+//socket to listen when the device's settings are changed
 socket.on(sock,(data)=>{
   
   console.log(data.mode)
@@ -697,7 +616,7 @@ socket.on(sock,(data)=>{
   
   console.log('chec')
          
-        console.log(data)
+        //console.log(data)
         var device_name=document.getElementsByClassName('title')[0].innerText
         if(current_state==`${device_name} is on`){
           is_on=1
@@ -709,7 +628,7 @@ socket.on(sock,(data)=>{
         var change_is
         var state_value
         var t1=document.getElementById('all_options')
-        console.log(t1.style.display)
+        //console.log(t1.style.display)
         
         
         if(data.change_state==undefined ||data.change_state=='1'){

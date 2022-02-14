@@ -16,6 +16,9 @@
     <!-- <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>-->
          <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+         <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
 
     
 
@@ -88,30 +91,19 @@
         <td class="test"><a href="/device/{{device_id1}}"target="_self" class="a1" ><p>See history</p></a></td>
        <!--  </div> -->
     </tr>
+    
+   
  
    <!-- <li class='task' id={{id}}>weight: {{weight}}, lognitude: {{lognitude}}, latitude: {{latitude}}, time: {{time}}, date: {{date}}</li> -->
     {{/each}}
+
+   
 </table>
 
+ 
 
 
-</div><!--
-<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
-<form action="/handle" method="post" target="dummyframe" </form>>
-    <labe for="change state"  id="device_id">scale_0 is on</p><br>
-    <label for="change_state">Turn off Device</label>
-    <div class="normal_mode">
-    <input type="checkbox" id="change_state" onlick="test()"name="change_state" value="1"> <br>
-    
-    <input   type="text" name="device_id" value="0" style="display: none;" readonly>
-    <input id="rangeInput" name="sample_rate" type="range" min="1" max="30" value="30" oninput="amount.value=rangeInput.value" />
-    <input id="amount" type="number" value="30" min="1" max="30" oninput="rangeInput.value=amount.value" /><br>
-    <input type="submit" value="Save Changes">
-    </div>
-    </form>-->
-
-
-  
+</div>
 
   
 
@@ -119,118 +111,12 @@
   const socketURL = 'http://localhost:8080'
 const socket = io();
 
-  //change state of device
 
-  //change mode 
-  //change sample rate
 
-//const socket = io();
- //test
- //ΝΑ ΑΛΛΑΞΩ ΠΡΑΓΜΑΤΑ
-async function Refresh_page (pos) {
-   fetch('/refresh_homepage')
-      .then( async (response) => {
-
-        // get json response here
-        let data = await response.json();
-        
-        
-        if(response.status === 200){
-         // Process data here
-        }else{
-         // Rest of status codes (400,500,303), can be handled here appropriately
-        }
-        console.log(data.device[0].max)
-        if( data.device[0].max!=undefined){
-          return data.device[0].max
-
-        }
-
-      })
-      .catch((err) => {
-          console.log(err);
-      })
-     
-}
-
-function check_refresh(max_pos,ms){
-  setInterval(Refresh_page(max_pos),ms)
-}
 
  //-----------------
 
-  function get_basic_info(){
- var list=document.getElementsByClassName('task')
-    var pos=document.getElementsByClassName('pos')
-    var la=document.getElementsByClassName('latitude')
-    var lo=document.getElementsByClassName('lognitude')
-    var we=document.getElementsByClassName('weight')
-    var da=document.getElementsByClassName('date')
-    var ti=document.getElementsByClassName('time')
-    var refresh_check=0
-    var locations=[]
-    var latitude=[]
-    var lognitude=[]
-    var date=[]
-    var weight=[]
-    var time=[]
-    var ids=[]
-    var names=[]
-    var position=[]
-    for(i=0;i<la.length;i++){
-        position.push( pos[i].id)
-        if(parseInt(pos[i].id)>=refresh_check){
-          refresh_check=pos[i].id
-        }
-        names.push(list[i].innerText)
-        ids.push(list[i].id)
-        latitude.push(parseFloat(la[i].innerText))
-        lognitude.push(parseFloat(lo[i].innerText))
-        locations.push([parseFloat(lo[i].innerText),parseFloat(la[i].innerText)])
-        date.push(da[i].innerText)
-        time.push(ti[i].innerText)
-        weight.push(we[i].innerText)
-    }
-
-    return position,names,ids,latitude,lognitude,locations,date,time,weight
-
-  }
-   function Asceding(pos){/*
-     position,names,ids,latitude,lognitude,locations,date,time,weight=get_basic_info()
-      var data={
-        "pos":position,
-        "weight":weight,
-        "latitude":latitude,
-        "lognitude":lognitude,
-        "date-time":{
-          "date":date,
-          "time":time
-        }
-      }
-      var main=[...data[pos]]
-      var data1={}
-      for(i=0;i<main.length;i++){
-        tmp={}
-        for(i=0;i<data.length;i++){
-          if()
-        }
-        data[main[i]]={
-          
-        }
-      }
-      
-    
-    console.log(output)*/
-    console.log(pos)
-
-   }
-
-   
-   function Desceding(pos){
-     console.log(pos)
-   }
-   
-
+  //fixing the dates in table
   var date1=document.getElementsByClassName("date");
   
 
@@ -247,7 +133,7 @@ function check_refresh(max_pos,ms){
   }
 
 
-
+    //finding the index of element in array data
     function find_id(id1,data){
       var index
       for(i=0;i<data.length;i++){
@@ -260,7 +146,7 @@ function check_refresh(max_pos,ms){
       return null
     }
     
-        //takes all the longitudes and latitudes from dom
+    //takes from the dom all the data to insert marker in map
     var list=document.getElementsByClassName('task')
     var pos=document.getElementsByClassName('pos')
     var la=document.getElementsByClassName('latitude')
@@ -317,6 +203,7 @@ function check_refresh(max_pos,ms){
         time.push(ti[i].innerText)
         weight.push(we[i].innerText)
         sample_rate.push(sam[i].innerText)
+        //for the settings in pop-up ,we want to check the mode of the device for having the form data in order
         if(we[i].id=='0'){
           state.push('off')
           turn_device.push('1')
@@ -359,6 +246,7 @@ function check_refresh(max_pos,ms){
 
     console.log(latitude)
     console.log(lognitude)
+    //function to find the average in an array
     function find_average(list){
       var sum=0
       for(i=0;i<list.length;i++){
@@ -369,8 +257,10 @@ function check_refresh(max_pos,ms){
     }
     var mean_long=find_average(lognitude)
     var mean_lat=find_average(latitude)
-    //insert code for taking the average of lat and long
-  
+    
+
+    //creating map 
+
               //markers and pop up in map
                   var map = L.map( 'map', {
               center: [20.0, 5.0],
@@ -384,7 +274,7 @@ function check_refresh(max_pos,ms){
 
               map.fitBounds(zoom_locations)
 
-
+              //creating markers for the map
               var markers=[]
               for(i=0;i<latitude.length;i++){
                   markers.push({
@@ -414,8 +304,12 @@ function check_refresh(max_pos,ms){
           var mark=[]
           var mark1
           var id1
-          console.log(position)
+          //console.log(position)
           var form1
+          //the functions to change the form ,depending the mode of the device 
+          //for example when we want the device to turn off ,we cant change the mode and sample rate
+          //or when we want to have reqular mode the sample rate is 10 to 60 seconds ,but in psm mode is 1 to 6 hours
+          //so when an option is chosen ,it calls one of those functions to change the form settings
           function test(){
               console.log('hello there')
               var r1=document.getElementById('more_options')
@@ -468,8 +362,7 @@ function check_refresh(max_pos,ms){
             }
           }
                 
-                //.bindPopup( '<a href="/device/' + markers[i].id + '" target="_self" rel="noopener" class="a2">device:' + markers[i].name + '</a><br>'+'<p> weight: '+markers[i].weight+' kg<br>'+markers[i].date+' '+markers[i].time+'</p>' +'<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe><form action="/handle" method="post"><label for="change state"  id="device_id">'+markers[i].name+'is '+markers[i].state +'</p><br><label for="change_state">Turn '+markers[i].change_state1+ ' Device</label>'+'<input type="checkbox" id="change_state" name="change_state" value="1"><br> <label for=press_mode>press mode</label><input  type="radio" id=psm onclick="test2()" name="mode" value="press_mode" checked='+markers[i].press+'><br><label for=psm>power save mode</label><input  type="radio" id=psm onclick="test()" name="mode" value="psm" checked='+markers[i].psm+'><br><label for=reqular'+markers[i].id+'>reqular mode</label><input  type="radio" id=reqular'+markers[i].id+' onclick="test1()" name="mode" value="reqular" checked='+markers[i].reqular+' ><br><div id='+'more_options'+'><input   type="text" name="device_id" value='+markers[i].id+' style="display: none;" readonly><label for="sample_rate" display="style:'+markers[i].div_display+'"id='+'sample_rate_label'+'>Choose sample rate('+markes[i].monada+')</label><br><input id="rangeInput" name="sample_rate" type="range" min='+markes[i].min_st+' max='+markers[i].max_st+' value='+markers[i].sample_rate+' oninput="amount.value=rangeInput.value" /><input id="amount" type="number" value='+ markers[i].sample_rate+'min='+markes[i].min_st+' max='+markers[i].max_st+' oninput="rangeInput.value=amount.value" /><br></div><input type="submit" value="Save Changes"></form>')
-
+      //we check if the user is signed ,if they aren't signed then they won't have access to the settings of the device
       if(signed=='0'){
           for ( var i=0; i < markers.length; ++i ) 
           {
@@ -501,7 +394,7 @@ function check_refresh(max_pos,ms){
               
                
                
-              
+              //adding markers to map
                 
                 .addTo( map );
             mark.push(
@@ -514,7 +407,7 @@ function check_refresh(max_pos,ms){
           }
       }
  
- console.log(mark)
+ //console.log(mark)
  function change_back_color(dom){
     for(j=0;j<dom.children.length;j++){
    // dom.children[j].style.backgroundColor=color
@@ -523,7 +416,7 @@ function check_refresh(max_pos,ms){
   }
 
  }
-
+  //function to open popup when the name of the device in table is clicked
   function OpenPopUp(id){
       
       var t=find_id(id,mark)
@@ -531,8 +424,7 @@ function check_refresh(max_pos,ms){
       mark[t].mark2.openPopup()
   }
 
-    //change in dom the weight-latitude-lognitude-date_time
-    //ADDING NEW DATA WITH IO
+  //socket to listen when there is new data to update the table and pop-up
   socket.on('change_weight',(message)=>{
       console.log('hello there')
       var b=document.getElementById(`main${message.device_id}`)
@@ -584,6 +476,8 @@ function check_refresh(max_pos,ms){
 
 })
 //*
+
+//socket that listens when the device's settings are changed to update the table and pop-up
 socket.on('change_state',(message)=>{
     console.log(message)
     var device_id=message.device_id
@@ -596,7 +490,7 @@ socket.on('change_state',(message)=>{
     console.log(mode)
     console.log(sample_rate)
     var b=document.getElementById(`main${device_id}`)
-    //b.getElementsByClassName('is_on')[0].innerText='a'
+ 
     b.getElementsByClassName('mode')[0].innerText=mode
     b.getElementsByClassName('sample_rate')[0].innerText=sample_rate
      var div_option
@@ -660,6 +554,56 @@ socket.on('change_state',(message)=>{
     change_back_color(b)
 
 })//*/
+
+
+
+
+//getting the weights
+async function weight_devices1 (id) {
+  var string='/device_weight/'+id+'/limit/2'
+   fetch(string)
+      .then( async (response) => {
+
+        // get json response here
+        let data = await response.json();
+        
+        
+        if(response.status === 200){
+         // Process data here
+        }else{
+         // Rest of status codes (400,500,303), can be handled here appropriately
+        }
+        console.log(data)
+        data1=data.weight
+        console.log('new data')
+        console.log(data1)
+        var tr=document.getElementById('more_weights'+data.device)
+        for(i=0;i<data1.length;i++){
+          tr.innerHTML=tr.innerHTML+`<td class="new_pos" id=${i}>${i}</td>
+          <td class="td_device" > <p class='task1' >&nbsp;</p></td>
+          <td> <p class='weight1' >${data1[i].weight}</p> </td>
+          <td><p class="lognitude1" >${data1[i].long}</p></td>
+           <td><p class="latitude1"  >${data1[i].lang} </p></td>
+            <td><p class="latitude1"  >${data1[i].date_time} </p></td><br>
+          `
+        }
+
+       
+
+      })
+      .catch((err) => {
+          console.log(err);
+      })
+     
+}
+
+
+//getting ids
+var new_weight
+for(i=0;i<ids.length;i++){
+  //weight_devices1(ids[i])
+}
+
 
     </script>
  <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>

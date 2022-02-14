@@ -1,25 +1,9 @@
 'use strict';
 const e = require('express');
-const fs = require('fs');
-const lockFile = require('lockfile')
 
-//where tasks are stored
-const tasksFile = './model/tasks.json'
+//---From here we access the database to get or give data -----//
 
-const lock = './model/lock-file'
-
-
-//Δημιουργός (constructor) ενός αντικειμένου τύπου Task
-//Αν περαστεί ένα μόνο όρισμα, τότε τα άλλα δύο 
-//status=0 σημαίνει η εργασία είναι ενεργή, 1 σημαίνει έχει ολοκληρωθεί 
-//Constructor for a Task object. status 0 means that the task is active,
-//status 1 means task is completed (striked-through)
-exports.Task = function (taskName, status = 0, created_at = '') {
-    this.task = taskName;
-    this.status = status;  //0 -> active, 1 -> completed
-    this.created_at = created_at; //date of creation
-}
-
+//1 gets the device state from database and returns the rows 
 exports.getDevicesData=function(pool,callback){
     console.log('getting data')
     var quer=
@@ -54,17 +38,9 @@ exports.getDevicesData=function(pool,callback){
     })()
 
 }
+//2 gets the last collection for each device from the database and returns the rows
 exports.getAllWeights=function(pool,callback){
-    /*var data={
-        devices:[
-        {"id":1,"weight":2.54,"lognitude":21.708996,"latitude":41.771312,"time":"12:23","date":"12/11/2021"},
-        {"id":2,"weight":30.0,"lognitude":21.747221,"latitude":38.236225,"time":"15:23","date":"12/11/2021"}
-        
-    ]
-    }
-    var devices=JSON.parse(JSON.stringify(data))
-
-    callback(null, devices)*/
+   
     console.log('getting data')
     var quer=
     `with q as(
@@ -132,19 +108,12 @@ exports.getAllWeights=function(pool,callback){
 
 
 }
+//3 gets the collection data from device with limit and returns the rows
 exports.getID=function(ID,limit,pool,callback){
     var d1=ID
     console.log(limit)
     console.log(`d1 is ${d1}`)
-    /*var data={
-        device:d1,
-        id:[
-        {"weight":2.54,"lognitude":21.708996,"latitude":41.771312,"time":"12:23","date":"12/11/2021"},
-        {"weight":32.0,"lognitude":21.747221,"latitude":38.236225,"time":"15:23","date":"12/11/2021"}
-        
-    ]
-    }
-    var device=JSON.parse(JSON.stringify(data))*/
+    
     var quer=`select * from public.collection_data,public.has_weight 
     where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=${d1} ORDER BY date_time ASC LIMIT ${limit};`
     //* 
@@ -191,38 +160,9 @@ exports.getID=function(ID,limit,pool,callback){
         client.release()
         return
     })()//*/
-    /*
-    pool.connect();
-    pool.query(`select * from public.collection_data,public.has_weight 
-    where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=${d1};`,(err,res)=>{
-    if(!err){
-      
-      
-      var data={
-        device:d1,
-        id:res.rows
-    }
-    var device=JSON.parse(JSON.stringify(data))
-   
-    callback(null, device)
-    return
-    
-    }
-    else{
-     
-      console.log(err.message);
-      callback(err, null)
-      return
-      
-    }
-    
-    })
-    //*/
-
-
     
 }
-
+//4 adding new collection data to the device
 exports.add_weight=function(data,pool,callback){
    
     /*const quer1=`INSERT INTO public.collection_data(
@@ -257,30 +197,11 @@ exports.add_weight=function(data,pool,callback){
             })
         client.release()
         return
-    })()//*/
-    /*client.connect();
-    client.query(quer1,(err,res)=>{
-            if(!err){
-            
-           
-            
-
-            callback(null, 'success')
-
-            }
-            else{
-
-            console.log(err.message);
-            callback(err, null)
-            return
-
-            }
-
-    })*/
-    //callback(null,'success')
+    })()
+    
     
 }
-
+//5 checks the setting for certain device
 exports.seeConnectivity=function(id,pool,callback){
    
     /*const quer1=`INSERT INTO public.collection_data(
@@ -323,7 +244,7 @@ exports.seeConnectivity=function(id,pool,callback){
     
 }
 
-
+//6 sets the device on or off in database
 exports.ChangeDeviceState=function(id,pool,callback){
    
     /*const quer1=`INSERT INTO public.collection_data(
@@ -360,7 +281,7 @@ exports.ChangeDeviceState=function(id,pool,callback){
     
     
 }
-
+//7 changes the settings of the device in the database
 exports.ChangeDeviceSettings=(id,sample_rate,change_state,mode,pool,callback)=>{
 
     console.log('changing Sample Rate')
@@ -408,7 +329,7 @@ exports.ChangeDeviceSettings=(id,sample_rate,change_state,mode,pool,callback)=>{
         return
     })()//*/
 }
-
+//8 gets the sum of collection data that the database has
 exports.Refresh_Homepage=function(pool,callback){
    
     /*const quer1=`INSERT INTO public.collection_data(
@@ -451,6 +372,7 @@ exports.Refresh_Homepage=function(pool,callback){
     
     
 }
+//9 checks if a email already exists in the database
 exports.EmailExists=(pool,email,callback)=>{
     
     const quer1=`SELECT username
@@ -483,23 +405,16 @@ exports.EmailExists=(pool,email,callback)=>{
 
 }
 
-
+//10 adding new user in the database
 exports.AddUser=(pool,req,callback)=>{
     
-    //callback(null,'re')
     
-    
-   //*
 
     const quer1=`INSERT INTO public.users (email,username, password) VALUES (
         '${req.body.email}','${req.body.username}',
         crypt('${req.body.psw}', gen_salt('bf'))
       );`
 
-    
-    //console.log(data)
-    
-    ///*
     ;(async function() {
         const client = await pool.connect()
         await client.query(quer1,(err,res)=>{
@@ -521,9 +436,10 @@ exports.AddUser=(pool,req,callback)=>{
     })()
 
 
-//*/
-}
 
+}
+//11 checks if the login data are correct in the database
+//to sign in a user
 exports.signUser=(pool,user,password,callback)=>{
 
     console.log('getting data')
@@ -562,7 +478,7 @@ exports.signUser=(pool,user,password,callback)=>{
     })()
 
 }
-
+//12 gets from the database the devices names
 exports.NameDevices=(pool,callback)=>{
     var quer=
     ` select device_name,device_id from public.device;`;
@@ -595,7 +511,7 @@ exports.NameDevices=(pool,callback)=>{
     })()
 
 }
-
+//13 checks if a user is admin 
 exports.check_admin=(pool,id,callback)=>{
     var quer=
     ` select admin from public.users where userid=${id};`
@@ -625,22 +541,10 @@ exports.check_admin=(pool,id,callback)=>{
     })()
 
 }
-
+//14 gets from the database all the collection data for a device
 exports.JsonDeviceData=(ID,pool,callback)=>{
     var d1=ID
     
-    console.log(`d1 is ${d1}`)
-    /*var data={
-        device:d1,
-        id:[
-        {"weight":2.54,"lognitude":21.708996,"latitude":41.771312,"time":"12:23","date":"12/11/2021"},
-        {"weight":32.0,"lognitude":21.747221,"latitude":38.236225,"time":"15:23","date":"12/11/2021"}
-        
-    ]
-    }
-    var device=JSON.parse(JSON.stringify(data))*/
-   
-    //* 
 
     var quer1=`with row_count as (
         select COUNT(*) as row1 from public.collection_data,public.has_weight 
@@ -665,9 +569,9 @@ exports.JsonDeviceData=(ID,pool,callback)=>{
                 weight:res.rows,
                 
             }
-            console.log(data.lim)
+           
             var device=JSON.parse(JSON.stringify(data))
-            //console.log(devices)
+          
             callback(null, device)
             client.end()
             
@@ -686,23 +590,10 @@ exports.JsonDeviceData=(ID,pool,callback)=>{
     })()
 
 }
-
+//gets from the database  the collection data with limit for a device
 exports.JsonDeviceDataLimit=(ID,limit,pool,callback)=>{
     var d1=ID
     
-    console.log(`d1 is ${d1}`)
-    /*var data={
-        device:d1,
-        id:[
-        {"weight":2.54,"lognitude":21.708996,"latitude":41.771312,"time":"12:23","date":"12/11/2021"},
-        {"weight":32.0,"lognitude":21.747221,"latitude":38.236225,"time":"15:23","date":"12/11/2021"}
-        
-    ]
-    }
-    var device=JSON.parse(JSON.stringify(data))*/
-   
-    //* 
-
     var quer1=`with row_count as (
         select COUNT(*) as row1 from public.collection_data,public.has_weight 
             where public.collection_data.coll_id=public.has_weight.coll_id1 and public.has_weight.device_id1=${d1}
@@ -741,7 +632,7 @@ exports.JsonDeviceDataLimit=(ID,limit,pool,callback)=>{
             
 
             }
-            console.log('hello')
+            console.log('hello there')
             })
         client.release()
         return

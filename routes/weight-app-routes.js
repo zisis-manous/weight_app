@@ -6,11 +6,9 @@ const app = express()
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-const res = require('express/lib/response');
-//const Pool = require('mysql/lib/Pool');
-var mysql = require('mysql');
+
 const session = require('express-session')
-const { request } = require('../app');
+
 const router = express.Router();
 
 
@@ -22,7 +20,7 @@ router.use(
 
 
 const passport=require('passport')
-const Chart = require('chart.js');
+
 
 //passport middleware for user sign in
 
@@ -32,28 +30,21 @@ let authUser = (user, password, done) => {
   //Let's assume that a search within your DB returned the username and password match for "Kyle".
   //login
   console.log('authUser')
+  //from signUser validates the login data
   deviceController.signUser(user,password,(err,auth)=>{
     console.log('after signUser the auth')
     console.log(auth)
     done(null,auth)
   })
-  /*
-  if(user=='zisismanous@gmail.com' || user=='test@gmail.com'){
-     let authenticated_user = { id: 123, name: user}
-     return done (null, authenticated_user )
-    }
-    else{
-      //can't login
-      done (null, null )
-    }*/
+
      
 }
 
 
-
+//passing the new local steategy to passport
 passport.use(new LocalStrategy(authUser))
 
-
+//serialize user
 passport.serializeUser( (user, done) => { 
   console.log(`--------> Serialize User`)
   console.log(user)     
@@ -63,7 +54,7 @@ passport.serializeUser( (user, done) => {
 
 } )
 
-
+//deserialize user
 passport.deserializeUser((user, done) => {
       //console.log("---------> Deserialize Id")
       
@@ -79,6 +70,7 @@ router.use(session({
   resave: false ,
   saveUninitialized: true ,
 }))
+//the functions the router uses
 router.use(passport.initialize());
 router.use(passport.session())
 //---------
@@ -110,13 +102,7 @@ const pool = new Pool({
 
 
 
-let count = 1
-
-
-
-//socket.io
-
-//APPLICATION'S ROUTES 
+//APPLICATION'S ROUTES --------------------------------------------------
 
 //get requests------------------------------------
 
@@ -231,7 +217,7 @@ router.post('/register_user',deviceController.registerUser)
 
 
 
-//--------------------
+//--------------------we tried using mqtt protocol--at the end we didn't use it---
 //mqtt -----
 const mqtt = require('mqtt')
 const host = process.env.MQTT_HOST
