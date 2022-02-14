@@ -39,7 +39,7 @@ Tα scripts στον client που χρησιμοποιούνται είναι
 * <script src="https://code.highcharts.com/modules/exporting.js "></script>
 * <script src="https://cdn.socket.io/4.4.1/socket.io.min.js "></script>
 * <script src="/leaflet.js"></script>
-**Σημείωση 1** Τα πακέτα socket.io και socket.io-client στο backend και το script στον client,<script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>, πρέπει να είναι ίδια εκδοχή για να λειτουργεί η σύνδεση με sockets,συγκεκριμένα χρησιμοποιείται η εκδοχή 4.4.1
+**Σημείωση 1** Τα πακέτα socket.io και socket.io-client στο backend και το script στον client,<script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>, πρέπει να είναι ίδια εκδοχή για να λειτουργεί η σύνδεση με sockets,συγκεκριμένα χρησιμοποιείται η εκδοχή 4.4.1.
 **Σημείωση 2** Στην σύνδεση στη βάση δεδομένων heroku PostgresSQL,τα στοιχεία σύνδεσης αλλάζουν αυτόματα ,οπότε αν υπάρχει αδυναμία σύνδεσης με βάσης είναι γιατί πρέπει να ανανεωθούν τα στοιχεία για να δουλέψει σε τοπικό επίπεδο.
 
 
