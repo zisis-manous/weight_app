@@ -1,5 +1,25 @@
 
-# WEIGHT APP-GROUP 2
+# Energy efficient weighing systems
+
+## Arduino and SIM7000G scale.
+
+Our project is the construction on an energy efficient IoT system. We approach energy efficiency in three levels.
+
+1. Energy efficient communication protocols.
+2. NB IoT low energy consumption capabilities.
+3. Consideration of different use cases.
+
+The hardware and equipment:
+* SIM7000G NB-IoT/CAT-M Module
+* Arduino Mega 2560
+* Weighing Sensor
+  - Straing gauge load cell
+  - HX711 Amplifier
+* Pressure sensor
+* GPS Antenna
+
+To execute the sketches, load them via the Arduino IDE to the Arduino using a USB 2.0 to USB 3.0 cable.
+More information on the hardware can be found on the wiki https://github.com/fine-just/weight_app/wiki/Hardware
 
 Απλή εφαρμογή υλοποίησης της εφαρμογής ΙoT για Low energy weighting systems
 της Ομάδας 2.
@@ -7,7 +27,7 @@
 Για να λειτουργήσει η εφαρμογή δεν χρειάζεται κάποια εγκατάσταση αφού μπορεί να βρεθεί στο `https://weight-app-g2.herokuapp.com/`.
 Απο την ίδια πλατφόρμα χρησιμοποιείται και η βάση δεδομένων `Heroku postgresSQL`.
 
-##Εφαρμογή για Low energy weighting systems
+## Εφαρμογή για Low energy weighting systems
 Η [εφαρμογή](https://weight-app-g2.herokuapp.com/) χρησιμοποιείται για έλεγχο και διαχείριση των συσκευών.
 
 ## Οδηγίες για εκτέλεση της εφαρμογής σε τοπικό επίπεδο
