@@ -24,7 +24,7 @@ More information on the hardware can be found on the wiki https://github.com/fin
 Απλή εφαρμογή υλοποίησης της εφαρμογής ΙoT για Low energy weighting systems
 της Ομάδας 2.
 Για την ανάπτυξη και διαχείριση της [εφαρμογής](https://weight-app-g2.herokuapp.com/) γίνεται απο την πλατφόρμα `heroku`.
-Για να λειτουργήσει η εφαρμογή δεν χρειάζεται κάποια εγκατάσταση αφού μπορεί να βρεθεί στο `https://weight-app-g2.herokuapp.com/`.
+Για να λειτουργήσει η εφαρμογή δεν χρειάζεται κάποια εγκατάσταση αφού μπορεί να βρεθεί στο `https://weight-app-g2.herokuapp.com/`.Λογαριασμος για δοκιμη των λειτουργιών σύνδεσης, email:test@gmail.com ,κωδικός :werty
 Απο την ίδια πλατφόρμα χρησιμοποιείται και η βάση δεδομένων `Heroku postgresSQL`.
 
 ## Εφαρμογή για Low energy weighting systems
